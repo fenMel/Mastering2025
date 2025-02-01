@@ -6,11 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import fr.esic.mastering.entities.Role;
 import fr.esic.mastering.entities.User;
 import fr.esic.mastering.repository.RoleRepository;
 import fr.esic.mastering.repository.UserRepository;
+
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @SpringBootApplication
 public class MasteringApplication implements CommandLineRunner {
@@ -55,6 +63,14 @@ public class MasteringApplication implements CommandLineRunner {
 
 	}
 	
-	 
+	 @Bean
+public JavaMailSender javaMailSender() {
+	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+	mailSender.setHost("smtp.example.com");
+    mailSender.setPort(587);
+    mailSender.setUsername("yanatremy09@gmail.com");
+    mailSender.setPassword("azerty");
+    return mailSender;
+}
 
 }
