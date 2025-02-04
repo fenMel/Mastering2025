@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +23,23 @@ public class UserRest {
     @Autowired
 	private UserRepository  userRepository;
   
-    @PostMapping("login")
-	public Optional<User> login(@RequestBody User user) {
-		return  userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());	
-	}
-    
+    // @PostMapping("login")
+	// public Optional<User> login(@RequestBody User user) {
+	// 	return  userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());	
+	// }
+
+    // samy
+     @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody User user) {
+        Optional<User> optionalUser = userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.ok(optionalUser.get());
+        } else {
+            return ResponseEntity.status(404).body(null); // Code 404 si l'utilisateur n'est pas trouvé
+        }
+    }
+    // melissa
+
     @GetMapping("users")
     public Iterable<User> getAllUsers(){
 	return userRepository.findAll();
