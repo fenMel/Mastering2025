@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Générateur de Certificats</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .form-container {
+            flex: 1;
+        }
+        h1 {
+            color: #003366;
+        }
+        h2 {
+            color: #336699;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #336699;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #003366;
+        }
+        #previewFrame {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Générateur de Certificats de Master</h1>
+    
+    <div class="container">
+        <div class="form-container">
+            <h2>Méthode Simple (GET)</h2>
+            <form id="simpleForm">
+                <div class="form-group">
+                    <label for="nom">Nom:</label>
+                    <input type="text" id="nom" name="nom" required>
+                </div>
+                <div class="form-group">
+                    <label for="prenom">Prénom:</label>
+                    <input type="text" id="prenom" name="prenom" required>
+                </div>
+                <div class="form-group">
+                    <label for="specialite">Spécialité:</label>
+                    <input type="text" id="specialite" name="specialite" value="Informatique">
+                </div>
+                <div class="form-group">
+                    <label for="mention">Mention:</label>
+                    <select id="mention" name="mention">
+                        <option value="Passable">Passable</option>
+                        <option value="Assez Bien">Assez Bien</option>
+                        <option value="Bien" selected>Bien</option>
+                        <option value="Très Bien">Très Bien</option>
+                        <option value="Excellent">Excellent</option>
+                    </select>
+                </div>
+                <button type="button" onclick="genererCertificatSimple()">Générer et Visualiser</button>
+                <button type="button" onclick="telechargerCertificatSimple()">Télécharger</button>
+            </form>
+        </div>
+        
+        <div class="form-container">
+            <h2>Méthode Complète (POST)</h2>
+            <form id="completeForm">
+                <div class="form-group">
+                    <label for="nomEtudiant">Nom:</label>
+                    <input type="text" id="nomEtudiant" name="nomEtudiant" required>
+                </div>
+                <div class="form-group">
+                    <label for="prenomEtudiant">Prénom:</label>
+                    <input type="text" id="prenomEtudiant" name="prenomEtudiant" required>
+                </div>
+                <div class="form-group">
+                    <label for="specialiteEtudiant">Spécialité:</label>
+                    <input type="text" id="specialiteEtudiant" name="specialiteEtudiant" value="Informatique et Technologies">
+                </div>
+                <div class="form-group">
+                    <label for="mentionEtudiant">Mention:</label>
+                    <select id="mentionEtudiant" name="mentionEtudiant">
+                        <option value="Passable">Passable</option>
+                        <option value="Assez Bien">Assez Bien</option>
+                        <option value="Bien">Bien</option>
+                        <option value="Très Bien" selected>Très Bien</option>
+                        <option value="Excellent">Excellent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="titreMaster">Titre du Master:</label>
+                    <input type="text" id="titreMaster" name="titreMaster" value="Sciences et Technologies">
+                </div>
+                <div class="form-group">
+                    <label for="directeurProgramme">Directeur du Programme:</label>
+                    <input type="text" id="directeurProgramme" name="directeurProgramme" value="Prof. Jean DUPONT">
+                </div>
+                <button type="button" onclick="genererCertificatComplet()">Générer et Visualiser</button>
+            </form>
+        </div>
+    </div>
+    
+    <h2>Aperçu du certificat</h2>
+    <iframe id="previewFrame" frameborder="0"></iframe>
+    
+    <script>
+        function genererCertificatSimple() {
+            const form = document.getElementById('simpleForm');
+            const nom = encodeURIComponent(form.elements['nom'].value);
+            const prenom = encodeURIComponent(form.elements['prenom'].value);
+            const specialite = encodeURIComponent(form.elements['specialite'].value);
+            const mention = encodeURIComponent(form.elements['mention'].value);
+            
+            // Modifier l'en-tête Content-Disposition pour l'affichage en ligne
+            const url = `/api/certificats/master/simple?nom=${nom}&prenom=${prenom}&specialite=${specialite}&mention=${mention}`;
+            
+            // Afficher dans l'iframe
+            document.getElementById('previewFrame').src = url;
+        }
+        
+        function telechargerCertificatSimple() {
+            const form = document.getElementById('simpleForm');
+            const nom = encodeURIComponent(form.elements['nom'].value);
+            const prenom = encodeURIComponent(form.elements['prenom'].value);
+            const specialite = encodeURIComponent(form.elements['specialite'].value);
+            const mention = encodeURIComponent(form.elements['mention'].value);
+            
+            // L'en-tête Content-Disposition est déjà configuré pour le téléchargement dans l'API
+            const url = `/api/certificats/master/simple?nom=${nom}&prenom=${prenom}&specialite=${specialite}&mention=${mention}`;
+            
+            // Ouvrir dans un nouvel onglet pour déclencher le téléchargement
+            window.open(url, '_blank');
+        }
+        
+        function genererCertificatComplet() {
+            const form = document.getElementById('completeForm');
+            const certificat = {
+                nomEtudiant: form.elements['nomEtudiant'].value,
+                prenomEtudiant: form.elements['prenomEtudiant'].value,
+                specialite: form.elements['specialiteEtudiant'].value,
+                mention: form.elements['mentionEtudiant'].value,
+                titreMaster: form.elements['titreMaster'].value,
+                directeurProgramme: form.elements['directeurProgramme'].value
+            };
+            
+            // Utiliser fetch pour envoyer la requête POST avec le bon Content-Type
+            fetch('/api/certificats/master', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(certificat)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                }
+                throw new Error('Erreur lors de la génération du certificat');
+            })
+            .then(blob => {
+                // Créer une URL pour le blob et l'afficher dans l'iframe
+                const url = URL.createObjectURL(blob);
+                document.getElementById('previewFrame').src = url;
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la génération du certificat: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
