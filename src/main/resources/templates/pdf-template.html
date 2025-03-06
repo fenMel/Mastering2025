@@ -58,144 +58,66 @@
     </style>
 </head>
 <body>
-    <h1>Générateur de Certificats de Master</h1>
-    
-    <div class="container">
-        <div class="form-container">
-            <h2>Méthode Simple (GET)</h2>
-            <form id="simpleForm">
-                <div class="form-group">
-                    <label for="nom">Nom:</label>
-                    <input type="text" id="nom" name="nom" required>
-                </div>
-                <div class="form-group">
-                    <label for="prenom">Prénom:</label>
-                    <input type="text" id="prenom" name="prenom" required>
-                </div>
-                <div class="form-group">
-                    <label for="specialite">Spécialité:</label>
-                    <input type="text" id="specialite" name="specialite" value="Informatique">
-                </div>
-                <div class="form-group">
-                    <label for="mention">Mention:</label>
-                    <select id="mention" name="mention">
-                        <option value="Passable">Passable</option>
-                        <option value="Assez Bien">Assez Bien</option>
-                        <option value="Bien" selected>Bien</option>
-                        <option value="Très Bien">Très Bien</option>
-                        <option value="Excellent">Excellent</option>
-                    </select>
-                </div>
-                <button type="button" onclick="genererCertificatSimple()">Générer et Visualiser</button>
-                <button type="button" onclick="telechargerCertificatSimple()">Télécharger</button>
-            </form>
-        </div>
+    <div class="tab-content" id="candidats-tab">
+        <h3>Liste des candidats</h3>
         
-        <div class="form-container">
-            <h2>Méthode Complète (POST)</h2>
-            <form id="completeForm">
-                <div class="form-group">
-                    <label for="nomEtudiant">Nom:</label>
-                    <input type="text" id="nomEtudiant" name="nomEtudiant" required>
-                </div>
-                <div class="form-group">
-                    <label for="prenomEtudiant">Prénom:</label>
-                    <input type="text" id="prenomEtudiant" name="prenomEtudiant" required>
-                </div>
-                <div class="form-group">
-                    <label for="specialiteEtudiant">Spécialité:</label>
-                    <input type="text" id="specialiteEtudiant" name="specialiteEtudiant" value="Informatique et Technologies">
-                </div>
-                <div class="form-group">
-                    <label for="mentionEtudiant">Mention:</label>
-                    <select id="mentionEtudiant" name="mentionEtudiant">
-                        <option value="Passable">Passable</option>
-                        <option value="Assez Bien">Assez Bien</option>
-                        <option value="Bien">Bien</option>
-                        <option value="Très Bien" selected>Très Bien</option>
-                        <option value="Excellent">Excellent</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="titreMaster">Titre du Master:</label>
-                    <input type="text" id="titreMaster" name="titreMaster" value="Sciences et Technologies">
-                </div>
-                <div class="form-group">
-                    <label for="directeurProgramme">Directeur du Programme:</label>
-                    <input type="text" id="directeurProgramme" name="directeurProgramme" value="Prof. Jean DUPONT">
-                </div>
-                <button type="button" onclick="genererCertificatComplet()">Générer et Visualiser</button>
-            </form>
+        <div class="table-container">
+            <table id="tableCandidats">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Formation</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les candidats seront chargés dynamiquement -->
+                </tbody>
+            </table>
         </div>
     </div>
     
-    <h2>Aperçu du certificat</h2>
-    <iframe id="previewFrame" frameborder="0"></iframe>
-    
     <script>
-        function genererCertificatSimple() {
-            const form = document.getElementById('simpleForm');
-            const nom = encodeURIComponent(form.elements['nom'].value);
-            const prenom = encodeURIComponent(form.elements['prenom'].value);
-            const specialite = encodeURIComponent(form.elements['specialite'].value);
-            const mention = encodeURIComponent(form.elements['mention'].value);
-            
-            // Modifier l'en-tête Content-Disposition pour l'affichage en ligne
-            const url = `/api/certificats/master/simple?nom=${nom}&prenom=${prenom}&specialite=${specialite}&mention=${mention}`;
-            
-            // Afficher dans l'iframe
-            document.getElementById('previewFrame').src = url;
-        }
-        
-        function telechargerCertificatSimple() {
-            const form = document.getElementById('simpleForm');
-            const nom = encodeURIComponent(form.elements['nom'].value);
-            const prenom = encodeURIComponent(form.elements['prenom'].value);
-            const specialite = encodeURIComponent(form.elements['specialite'].value);
-            const mention = encodeURIComponent(form.elements['mention'].value);
-            
-            // L'en-tête Content-Disposition est déjà configuré pour le téléchargement dans l'API
-            const url = `/api/certificats/master/simple?nom=${nom}&prenom=${prenom}&specialite=${specialite}&mention=${mention}`;
-            
-            // Ouvrir dans un nouvel onglet pour déclencher le téléchargement
-            window.open(url, '_blank');
-        }
-        
-        function genererCertificatComplet() {
-            const form = document.getElementById('completeForm');
-            const certificat = {
-                nomEtudiant: form.elements['nomEtudiant'].value,
-                prenomEtudiant: form.elements['prenomEtudiant'].value,
-                specialite: form.elements['specialiteEtudiant'].value,
-                mention: form.elements['mentionEtudiant'].value,
-                titreMaster: form.elements['titreMaster'].value,
-                directeurProgramme: form.elements['directeurProgramme'].value
-            };
-            
-            // Utiliser fetch pour envoyer la requête POST avec le bon Content-Type
-            fetch('/api/certificats/master', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(certificat)
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.blob();
-                }
-                throw new Error('Erreur lors de la génération du certificat');
-            })
-            .then(blob => {
-                // Créer une URL pour le blob et l'afficher dans l'iframe
-                const url = URL.createObjectURL(blob);
-                document.getElementById('previewFrame').src = url;
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Erreur lors de la génération du certificat: ' + error.message);
+    // Charger la liste des candidats au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+        chargerCandidats();
+    });
+    
+    function chargerCandidats() {
+        fetch('/api/certificats/candidats')
+            .then(response => response.json())
+            .then(candidats => {
+                const tbody = document.getElementById('tableCandidats').getElementsByTagName('tbody')[0];
+                tbody.innerHTML = '';
+                
+                candidats.forEach(candidat => {
+                    const tr = document.createElement('tr');
+                    
+                    tr.innerHTML = `
+                        <td>${candidat.nom}</td>
+                        <td>${candidat.prenom}</td>
+                        <td>${candidat.email}</td>
+                        <td>${candidat.formation ? candidat.formation.nom : 'Non définie'}</td>
+                        <td>
+                            <button onclick="visualiserCertificat(${candidat.id})">Visualiser</button>
+                            <button onclick="telechargerCertificat(${candidat.id})">Télécharger</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(tr);
+                });
             });
-        }
+    }
+    
+    function visualiserCertificat(userId) {
+        document.getElementById('pdfViewer').src = `/api/certificats/user/${userId}`;
+    }
+    
+    function telechargerCertificat(userId) {
+        window.open(`/api/certificats/user/${userId}/download`, '_blank');
+    }
     </script>
 </body>
 </html>

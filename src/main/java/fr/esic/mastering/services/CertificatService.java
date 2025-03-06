@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import fr.esic.mastering.entities.User;
+import fr.esic.mastering.entities.RoleType;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lowagie.text.Document;
@@ -17,6 +20,9 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfWriter;
+
+import fr.esic.mastering.entities.RoleType;
+import fr.esic.mastering.repository.UserRepository;
 
 @Service
 public class CertificatService {
@@ -198,4 +204,44 @@ public class CertificatService {
 
         return new ByteArrayInputStream(out.toByteArray());
     }
+     @Autowired
+    private UserRepository userRepository;
+    /**
+     * Génère un certificat pour un utilisateur spécifique à partir de son ID
+     */
+    public ByteArrayInputStream genererCertificatPourUser(Long userId) throws DocumentException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        
+        // Vérifier que l'utilisateur est bien un candidat
+        if (user.getRole().getRoleUtilisateur() != RoleType.CANDIDATE) {
+            throw new RuntimeException("Le certificat ne peut être généré que pour un candidat");
+        }
+        
+        CertificatMaster certificat = new CertificatMaster();
+        certificat.setNomEtudiant(user.getNom());
+        certificat.setPrenomEtudiant(user.getPrenom());
+        
+        // Récupérer la spécialité depuis la formation
+        String specialite = user.getFormation() != null ? 
+                            user.getFormation().getNom() : 
+                            "Non spécifiée";
+        certificat.setSpecialite(specialite);
+        
+        // Définir une mention par défaut (à personnaliser selon votre logique)
+        certificat.setMention("Bien");
+        
+        certificat.setTitreMaster("Sciences et Technologies");
+        certificat.setDirecteurProgramme("Prof. Jean DUPONT");
+        
+        return genererCertificatMaster(certificat);
+    }
+    
+    /**
+     * Récupère tous les candidats
+     */
+    public List<User> getAllCandidats() {
+        return userRepository.findByRoleRoleUtilisateur(RoleType.CANDIDATE);
+    }
+    
 }
