@@ -30,26 +30,3 @@ public class Role {
 
 }
 
-
-
-    // Enum to define all available roles
-/*
-    public enum RoleType {
-        ADMIN("ROLE_ADMIN"),
-        ETUDIANT("ROLE_ETUDIANT"),
-        JURY("ROLE_JURY"),
-        COORDINATEUR("ROLE_COORDINATEUR");
-
-        private final String value;
-
-        RoleType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    */
-

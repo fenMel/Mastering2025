@@ -196,7 +196,7 @@ public class SoutenanceController {
                 .prenom(user.getPrenom())
                 .email(user.getEmail())
                 .roles(user.getRoles().stream()
-                        .map(Role::getName)
+                        .map(Role_update::getName)
                         .collect(Collectors.toSet()))
                 .build();
     }

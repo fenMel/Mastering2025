@@ -3,11 +3,13 @@ package fr.esic.mastering.services;
 import fr.esic.mastering.dto.CoordinateurRequest;
 import fr.esic.mastering.dto.UserRegistrationRequest;
 import fr.esic.mastering.entities.Role;
+import fr.esic.mastering.entities.Role_update;
 import fr.esic.mastering.entities.User_update;
 import fr.esic.mastering.exceptions.InvalidOperationException;
 import fr.esic.mastering.exceptions.ResourceNotFoundException;
 import fr.esic.mastering.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +20,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final User_updateRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final Role_update_repository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final SoutenanceRepository soutenanceRepository;
     private final InscriptionRepository inscriptionRepository;
 
+
     public User_update createUser(UserRegistrationRequest request) {
+
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new InvalidOperationException("Ce nom d'utilisateur est déjà pris");
         }
@@ -34,7 +38,7 @@ public class UserService {
         }
 
         // Récupérer le rôle par défaut (ROLE_ETUDIANT par exemple)
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+        Role_update adminRole = roleRepository.findByName("ROLE_ADMIN")
                 .orElseThrow(() -> new RuntimeException("Rôle admin non trouvé"));
 
         User_update user = User_update.builder()
@@ -55,7 +59,7 @@ public class UserService {
         User_update user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé"));
 
-        Role role = roleRepository.findByName(roleName)
+        Role_update role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new ResourceNotFoundException("Rôle non trouvé"));
 
         user.getRoles().clear();
@@ -89,7 +93,7 @@ public class UserService {
         }
 
         // Find the COORDINATEUR role
-        Role coordinateurRole = roleRepository.findByName("ROLE_COORDINATEUR")
+        Role_update coordinateurRole = roleRepository.findByName("ROLE_COORDINATEUR")
                 .orElseThrow(() -> new ResourceNotFoundException("Role COORDINATEUR not found"));
 
         // Create the user with COORDINATEUR role

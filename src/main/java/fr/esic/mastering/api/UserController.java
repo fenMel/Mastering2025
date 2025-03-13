@@ -24,6 +24,7 @@ public class UserController {
     private final SoutenanceService soutenanceService;
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
         log.info("Registering new user: {}", request.getUsername());
         User_update user = userService.createUser(request);

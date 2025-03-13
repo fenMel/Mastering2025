@@ -44,7 +44,7 @@ public class User_update {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     @Builder.Default
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role_update> roles = new HashSet<>();
 
     // Helper methods for role management
     public boolean hasRole(String roleName) {

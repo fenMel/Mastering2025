@@ -27,8 +27,9 @@ public class SoutenanceService {
     private final VerificationService verificationService;
     private final EmailService emailService;
     private final User_updateRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final Role_update_repository role_update_repository;
 
     public Soutenance creerSoutenance(SoutenanceRequest request) {
         return soutenanceRepository.save(
@@ -140,7 +141,7 @@ public class SoutenanceService {
                 .build();
 
         // Get JURY role
-        Role juryRole = roleRepository.findByName("ROLE_JURY")
+        Role_update juryRole = role_update_repository.findByName("ROLE_JURY")
                 .orElseThrow(() -> new ResourceNotFoundException("JURY role not found"));
 
         juryMember.getRoles().add(juryRole);
