@@ -39,7 +39,7 @@ public class CertificatService {
         private String numCertificat;
         private String titreMaster;
         private String directeurProgramme;
-        
+
         public CertificatMaster() {
             this.dateObtention = new SimpleDateFormat("dd MMMM yyyy").format(new Date());
             this.numCertificat = "M-" + System.currentTimeMillis();
@@ -113,7 +113,7 @@ public class CertificatService {
 
     /**
      * Génère un certificat de réussite pour une soutenance de Master
-     * 
+     *
      * @param certificat Les informations du certificat
      * @return Le PDF du certificat
      * @throws DocumentException
@@ -128,13 +128,13 @@ public class CertificatService {
 
         try {
             // Ajouter une bordure décorative
-            Rectangle rect = new Rectangle(document.left() + 15, document.bottom() + 15, 
-                              document.right() - 15, document.top() - 15);
+            Rectangle rect = new Rectangle(document.left() + 15, document.bottom() + 15,
+                    document.right() - 15, document.top() - 15);
             rect.setBorder(Rectangle.BOX);
             rect.setBorderWidth(2);
             rect.setBorderColor(new java.awt.Color(28, 40, 94)); // Bleu foncé
             writer.setBoxSize("art", rect);
-            
+
             // Logo de l'université (à remplacer par le chemin réel de votre logo)
             // Image logo = Image.getInstance("classpath:static/images/logo_universite.png");
             // logo.scaleToFit(150, 150);
@@ -204,7 +204,7 @@ public class CertificatService {
 
         return new ByteArrayInputStream(out.toByteArray());
     }
-     @Autowired
+    @Autowired
     private UserRepository userRepository;
     /**
      * Génère un certificat pour un utilisateur spécifique à partir de son ID
@@ -212,36 +212,36 @@ public class CertificatService {
     public ByteArrayInputStream genererCertificatPourUser(Long userId) throws DocumentException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-        
+
         // Vérifier que l'utilisateur est bien un candidat
         if (user.getRole().getRoleUtilisateur() != RoleType.CANDIDATE) {
             throw new RuntimeException("Le certificat ne peut être généré que pour un candidat");
         }
-        
+
         CertificatMaster certificat = new CertificatMaster();
         certificat.setNomEtudiant(user.getNom());
         certificat.setPrenomEtudiant(user.getPrenom());
-        
+
         // Récupérer la spécialité depuis la formation
-        String specialite = user.getFormation() != null ? 
-                            user.getFormation().getNom() : 
-                            "Non spécifiée";
+        String specialite = user.getFormation() != null ?
+                user.getFormation().getNom() :
+                "Non spécifiée";
         certificat.setSpecialite(specialite);
-        
+
         // Définir une mention par défaut (à personnaliser selon votre logique)
         certificat.setMention("Bien");
-        
+
         certificat.setTitreMaster("Sciences et Technologies");
         certificat.setDirecteurProgramme("Prof. Jean DUPONT");
-        
+
         return genererCertificatMaster(certificat);
     }
-    
+
     /**
      * Récupère tous les candidats
      */
     public List<User> getAllCandidats() {
         return userRepository.findByRoleRoleUtilisateur(RoleType.CANDIDATE);
     }
-    
+
 }

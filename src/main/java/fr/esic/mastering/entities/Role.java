@@ -11,20 +11,45 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	 @Enumerated(EnumType.STRING) // Stocke l'enum sous forme de chaîne dans la base de données
-	 @Column(unique = true, nullable = false)
-	private RoleType  roleUtilisateur;
-	
-	// samy
-	@Column(nullable = false, unique = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING) // Stocke l'enum sous forme de chaîne dans la base de données
+    @Column(unique = true, nullable = false)
+    private RoleType roleUtilisateur;
+
+    // samy
+    @Column(nullable = false, unique = true)
     private String name;
+
 }
+
+
+
+    // Enum to define all available roles
+/*
+    public enum RoleType {
+        ADMIN("ROLE_ADMIN"),
+        ETUDIANT("ROLE_ETUDIANT"),
+        JURY("ROLE_JURY"),
+        COORDINATEUR("ROLE_COORDINATEUR");
+
+        private final String value;
+
+        RoleType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    */
+
