@@ -26,7 +26,6 @@ public class ApprenantService {
                 .nom(dto.getNom())
                 .prenom(dto.getPrenom())
                 .email(dto.getEmail())
-
                 .build();
         return apprenantRepository.save(etudiant);
     }

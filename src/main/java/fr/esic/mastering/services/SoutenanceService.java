@@ -9,6 +9,7 @@ import fr.esic.mastering.exceptions.ResourceNotFoundException;
 import fr.esic.mastering.exceptions.SoutenanceNotFoundException;
 import fr.esic.mastering.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,11 +42,13 @@ public class SoutenanceService {
         );
     }
 
+    @Transactional
     public Soutenance getSoutenanceById(Long soutenanceId) {
         return soutenanceRepository.findById(soutenanceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Soutenance not found"));
     }
 
+    @Transactional
     public List<Soutenance> getAllSoutenances() {
         return soutenanceRepository.findAll();
     }
@@ -183,9 +186,9 @@ public class SoutenanceService {
         return soutenanceRepository.save(soutenance);
     }
 
-
+    @Transactional
     public Soutenance updateSoutenance(Long id, SoutenanceRequest request) {
-        Soutenance existingSoutenance = soutenanceRepository.findById(id)
+        Soutenance existingSoutenance = soutenanceRepository.findByIdWithJuryMembers(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Soutenance not found with id " + id));
 
         existingSoutenance.setSujet(request.getSujet());

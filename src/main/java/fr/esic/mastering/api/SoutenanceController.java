@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class SoutenanceController {
 
 
     @GetMapping("/{soutenanceId}")
+    @Transactional
     public ResponseEntity<SoutenanceDetailRequest> getSoutenanceById(@PathVariable Long soutenanceId) {
         Soutenance soutenance = soutenanceService.getSoutenanceById(soutenanceId);
         SoutenanceDetailRequest dto = SoutenanceDetailRequest.builder()
@@ -66,13 +68,27 @@ public class SoutenanceController {
     }
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Soutenance> updateSoutenance(
-            @PathVariable Long id,
+    @PutMapping("/{soutenanceId}")
+    @Transactional
+    public ResponseEntity<?> updateSoutenance(
+            @PathVariable Long soutenanceId,
             @Valid @RequestBody SoutenanceRequest request) {
-        Soutenance updatedSoutenance = soutenanceService.updateSoutenance(id, request);
-        return ResponseEntity.ok(updatedSoutenance);
+        Soutenance updatedSoutenance = soutenanceService.updateSoutenance(soutenanceId, request);
+        SoutenanceDetailRequest response = convertToDTO(updatedSoutenance);
+        return ResponseEntity.ok(response);
     }
+
+    private SoutenanceDetailRequest convertToDTO(Soutenance soutenance) {
+        return SoutenanceDetailRequest.builder()
+                .id(soutenance.getId())
+                .lieu(soutenance.getLieu())
+                .dateHeure(soutenance.getDateHeure())
+                .sujet(soutenance.getSujet())
+                .build();
+    }
+
+
+
 
     @GetMapping("/{soutenanceId}/etudiants")
     public ResponseEntity<List<SessionApparentRequest>> getEtudiantsBySoutenance(

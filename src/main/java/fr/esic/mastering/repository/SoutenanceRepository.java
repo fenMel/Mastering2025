@@ -7,9 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 public interface SoutenanceRepository extends JpaRepository<Soutenance, Long> {
     @Transactional
     @Query("UPDATE Soutenance s SET s.coordinateur.id = :coordinateurId WHERE s.id = :soutenanceId")
     void assignCoordinateur(@Param("soutenanceId") Long soutenanceId, @Param("coordinateurId") Long coordinateurId);
-}
+
+    @Query("SELECT s FROM Soutenance s LEFT JOIN FETCH s.juryMembers WHERE s.id = :id")
+    Optional<Soutenance> findByIdWithJuryMembers(Long id);
+    }

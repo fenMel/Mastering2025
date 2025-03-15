@@ -54,13 +54,13 @@ public class AdminController {
                 .map(this::convertToUserDTO)
                 .collect(Collectors.toList());
 
-        // Get all soutenances with details
+        // Get all soutenances with they details
         List<SoutenanceDetailDTO> soutenances = soutenanceService.getAllSoutenances()
                 .stream()
                 .map(this::convertToSoutenanceDetailDTO)
                 .collect(Collectors.toList());
 
-        // Build the dashboard response
+        // Build The dashboard respoonse
         DashboardDTO dashboardDTO = DashboardDTO.builder()
                 .students(students)
                 .juryMembers(juryMembers)
@@ -96,7 +96,7 @@ public class AdminController {
                 .nom(etudiant.getNom())
                 .prenom(etudiant.getPrenom())
                 .email(etudiant.getEmail())
-                // Add any other student-specific fields
+                // Possiblité d'ajout d'un champ spécifique à un étudiant
                 .build();
     }
 

@@ -23,7 +23,7 @@ public class DocumentVerification {
     private Long id;
 
     @OneToOne
-    @JsonManagedReference  // Add this
+    @JsonManagedReference  // Add this to avoid json circular json reference
     private Document document;
 
     private String adminComment;

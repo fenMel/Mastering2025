@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Correct the path patterns
                         .requestMatchers("/api/formations/**", "/api/swagger-ui/**",
-                                "/swagger-ui/**", "/v3/api-docs/**", "/api/soutenances/").permitAll()
+                                "/swagger-ui/**", "/v3/api-docs/**", "/api/soutenances/", "/api/auth/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session

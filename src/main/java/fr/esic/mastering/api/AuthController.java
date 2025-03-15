@@ -1,6 +1,5 @@
 package fr.esic.mastering.api;
 
-import fr.esic.mastering.services.CertificatService;
 import fr.esic.mastering.services.VerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

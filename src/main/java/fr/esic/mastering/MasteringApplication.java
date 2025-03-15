@@ -62,7 +62,12 @@ public class MasteringApplication implements CommandLineRunner {
 	 
 
 	}
-	
+
+
+	//J'ai commenté ce code de Remy car la config du mail ne fonctionne pas
+
+	//Voir le fichier de propriété pour voir details de la config qui marche
+	/*
 	 @Bean
 public JavaMailSender javaMailSender() {
 	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -72,5 +77,8 @@ public JavaMailSender javaMailSender() {
     mailSender.setPassword("azerty");
     return mailSender;
 }
+
+*/
+
 
 }

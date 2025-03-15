@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DocumentController {
 private final DocumentService documentService;
+
     @PostMapping(value = "/upload/{etudiantId}", consumes = "multipart/form-data")
     public ResponseEntity<Document> uploadDocument(
             @PathVariable Long etudiantId,
