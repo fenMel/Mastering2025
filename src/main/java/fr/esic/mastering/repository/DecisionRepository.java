@@ -11,6 +11,7 @@ import java.util.List;
 public interface DecisionRepository extends JpaRepository<Decision, Long> {
     List<Decision> findByCandidatId(Long candidatId);
     List<Decision> findByJuryId(Long juryId);
-    List<Decision> findByVerdict(VerdictDecision verdict);
+    List<Decision> findByVerdict(VerdictDecision verdict); 
+    
 
 }
