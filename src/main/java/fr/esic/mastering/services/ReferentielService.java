@@ -33,33 +33,38 @@ public class ReferentielService {
         return referentiels.orElseThrow(() -> new RuntimeException("Referentiel not found with id: " + id));
     }
 
-    // Créer un référentiel à partir du DTO
-    public Referentiels createReferentiel(ReferentielDTO referentielDTO) {
-        Formation formation = formationRepository.findById(referentielDTO.getFormationId())
-                .orElseThrow(() -> new RuntimeException("Formation not found with id: " + referentielDTO.getFormationId()));
+    // ✅ Créer un référentiel à partir du DTO
+public Referentiels createReferentiel(ReferentielDTO referentielDTO) {
+    Formation formation = formationRepository.findById(referentielDTO.getFormationId())
+            .orElseThrow(() -> new RuntimeException("Formation not found with id: " + referentielDTO.getFormationId()));
 
-        Referentiels referentiels = new Referentiels();
-        referentiels.setNom(referentielDTO.getNom());
-        referentiels.setDescription(referentielDTO.getDescription());
-        referentiels.setFormation(formation); // Associer la formation
+    Referentiels referentiels = new Referentiels();
+    referentiels.setNom(referentielDTO.getNom());
+    referentiels.setDescription(referentielDTO.getDescription());
+    referentiels.setObjectifs(referentielDTO.getObjectifs()); // ✅ Ajouter les objectifs
+    referentiels.setCriteres(referentielDTO.getCriteres());   // ✅ Ajouter les critères
+    referentiels.setFormation(formation); // Associer la formation
 
-        return refRepository.save(referentiels);
-    }
+    return refRepository.save(referentiels);
+}
 
-    // Mettre à jour un référentiel
-    public Referentiels updateReferentiel(Long id, ReferentielDTO referentielDTO) {
-        Referentiels referentiels = refRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Referentiel not found with id: " + id));
+// ✅ Mettre à jour un référentiel
+public Referentiels updateReferentiel(Long id, ReferentielDTO referentielDTO) {
+    Referentiels referentiels = refRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Referentiel not found with id: " + id));
 
-        Formation formation = formationRepository.findById(referentielDTO.getFormationId())
-                .orElseThrow(() -> new RuntimeException("Formation not found with id: " + referentielDTO.getFormationId()));
+    Formation formation = formationRepository.findById(referentielDTO.getFormationId())
+            .orElseThrow(() -> new RuntimeException("Formation not found with id: " + referentielDTO.getFormationId()));
 
-        referentiels.setNom(referentielDTO.getNom());
-        referentiels.setDescription(referentielDTO.getDescription());
-        referentiels.setFormation(formation); // Associer la formation
+    referentiels.setNom(referentielDTO.getNom());
+    referentiels.setDescription(referentielDTO.getDescription());
+    referentiels.setObjectifs(referentielDTO.getObjectifs()); // ✅ Ajouter les objectifs
+    referentiels.setCriteres(referentielDTO.getCriteres());   // ✅ Ajouter les critères
+    referentiels.setFormation(formation); // Associer la formation
 
-        return refRepository.save(referentiels);
-    }
+    return refRepository.save(referentiels);
+}
+
 
     // Supprimer un référentiel par ID
     @Transactional
