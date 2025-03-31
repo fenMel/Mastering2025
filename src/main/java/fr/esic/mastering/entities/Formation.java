@@ -25,11 +25,6 @@ public class Formation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
-    
-    @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<User> users;
-
  
     @NotBlank(message = "Le champ nom est obligatoire.")
 
