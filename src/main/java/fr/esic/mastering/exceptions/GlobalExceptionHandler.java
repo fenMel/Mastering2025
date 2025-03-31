@@ -30,13 +30,13 @@ public class GlobalExceptionHandler {
     }
     
 
-    // Gestion des erreurs génériques
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGenericException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-            new ErrorResponse("Une erreur inattendue s'est produite.")
-        );
-    }
+//    // Gestion des erreurs génériques
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<?> handleGenericException(Exception ex) {
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+//            new ErrorResponse("Une erreur inattendue s'est produite.")
+//        );
+//    }
 
     // Classe pour formater la réponse
     static class ErrorResponse {
