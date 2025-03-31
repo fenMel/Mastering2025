@@ -6,5 +6,7 @@ import lombok.Data;
 public class ReferentielDTO {
     private String nom;
     private String description;
+    private String objectifs;
+    private String criteres;
     private Long formationId;
 }

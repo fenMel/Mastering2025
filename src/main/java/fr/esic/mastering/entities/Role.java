@@ -24,7 +24,4 @@ public class Role {
 	 @Column(unique = true, nullable = false)
 	private RoleType  roleUtilisateur;
 	
-	// samy
-	@Column(nullable = false, unique = true)
-    private String name;
 }

@@ -223,9 +223,12 @@ public class CertificatService {
         certificat.setPrenomEtudiant(user.getPrenom());
         
         // Récupérer la spécialité depuis la formation
-        String specialite = user.getFormation() != null ? 
-                            user.getFormation().getNom() : 
-                            "Non spécifiée";
+//        String specialite = user.getFormation() != null ? 
+//                            user.getFormation().getNom() : 
+//                            "Non spécifiée";
+//        certificat.setSpecialite(specialite);
+        String specialite =  
+        			"Non spécifiée. A REFAIRE";
         certificat.setSpecialite(specialite);
         
         // Définir une mention par défaut (à personnaliser selon votre logique)

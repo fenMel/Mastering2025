@@ -21,10 +21,6 @@ public class FormationService {
         return formationRepository.findAll();
     }
 
-    // Méthode pour obtenir les utilisateurs d'une formation par son ID
-    public List<User> getUsersByFormationId(Long formationId) {
-        return formationRepository.findUsersByFormationId(formationId);
-    }
 
     // Méthode pour obtenir une formation par son ID
     public Optional<Formation> getFormationById(Long id) {

@@ -36,6 +36,8 @@ public class Referentiels {
 	    @ManyToOne
 	    @JoinColumn(name = "formation_id") // Nom de la clé étrangère en BDD
 	    private Formation formation;
+
+	
 	 
 	}
 
