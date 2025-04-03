@@ -66,7 +66,7 @@ public class MasteringApplication implements CommandLineRunner {
 		roleSupportStaff.setRoleUtilisateur(RoleType.SUPPORT_STAFF);
 
 		Role roleCandidate = new Role();
-		roleCandidate.setRoleUtilisateur(RoleType.CANDIDATE);
+		roleCandidate.setRoleUtilisateur(RoleType.CANDIDAT);
 
 		Stream.of(roleCoordinateur, roleApprenant, roleJury, roleSupervisor, roleSupportStaff, roleCandidate)
 				.forEach(role -> {

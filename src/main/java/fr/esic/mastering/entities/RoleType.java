@@ -5,7 +5,7 @@ package fr.esic.mastering.entities;
 public enum RoleType {
 
 	CORDINATEUR,
-	CANDIDATE,
+	CANDIDAT,
 	JURY,
 	APPRENANT,
 	SUPERVISOR,

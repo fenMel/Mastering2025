@@ -214,7 +214,7 @@ public class CertificatService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         
         // Vérifier que l'utilisateur est bien un candidat
-        if (user.getRole().getRoleUtilisateur() != RoleType.CANDIDATE) {
+        if (user.getRole().getRoleUtilisateur() != RoleType.CANDIDAT) {
             throw new RuntimeException("Le certificat ne peut être généré que pour un candidat");
         }
         
@@ -244,7 +244,7 @@ public class CertificatService {
      * Récupère tous les candidats
      */
     public List<User> getAllCandidats() {
-        return userRepository.findByRoleRoleUtilisateur(RoleType.CANDIDATE);
+        return userRepository.findByRoleRoleUtilisateur(RoleType.CANDIDAT);
     }
     
 }
