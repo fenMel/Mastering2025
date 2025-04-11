@@ -86,7 +86,7 @@ public class MasteringApplication implements CommandLineRunner {
 		System.out.println("****************---------------Ajout des users-----------------****************");
 
 		// Coordinateurs (3)
-		User coord1 = new User(null, "Durand", "Luc", sdf.parse("05/02/1985"), "0601122334", "luc.durand@gmail.com",
+		User coord1 = new User(null, "Durand", "Luc", sdf.parse("05/02/1985"), "0601122334", "chancedarlon@gmail.com",
 				"Lyon", passwordEncoder.encode("LucCoord123"), roleCoordinateur);
 		User coord2 = new User(null, "Morel", "Sophie", sdf.parse("12/03/1984"), "0601234567", "sophie.morel@gmail.com",
 				"Nice", passwordEncoder.encode("SophieCoord123"), roleCoordinateur);
@@ -132,8 +132,8 @@ public class MasteringApplication implements CommandLineRunner {
 				"Casablanca", passwordEncoder.encode("NourSupport123"), roleSupportStaff);
 
 		// Candidats (10)
-		User cand1 = new User(null, "Sow", "Aminata", sdf.parse("09/01/1995"), "0601667788", "aminata.sow@gmail.com",
-				"Dakar", passwordEncoder.encode("AminataCand123"), roleCandidate);
+		User cand1 = new User(null, "Remsou", "Remi", sdf.parse("09/01/1995"), "0601667788", "remsou28@gmail.com",
+				"Dakar", passwordEncoder.encode("Remsou28"), roleCandidate);
 		User cand2 = new User(null, "Garcia", "Lucas", sdf.parse("20/05/1996"), "0601778899", "lucas.garcia@gmail.com",
 				"Madrid", passwordEncoder.encode("LucasCand123"), roleCandidate);
 		User cand3 = new User(null, "Kim", "Jin", sdf.parse("01/07/1994"), "0601889900", "jin.kim@gmail.com", "Seoul",
@@ -175,14 +175,14 @@ public class MasteringApplication implements CommandLineRunner {
 
 	}
 
-	@Bean
-	public JavaMailSender javaMailSender() {
-		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost("smtp.example.com");
-		mailSender.setPort(587);
-		mailSender.setUsername("yanatremy09@gmail.com");
-		mailSender.setPassword("azerty");
-		return mailSender;
-	}
+	// @Bean
+	// public JavaMailSender javaMailSender() {
+	// 	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+	// 	mailSender.setHost("smtp.example.com");
+	// 	mailSender.setPort(587);
+	// 	mailSender.setUsername("yanatremy09@gmail.com");
+	// 	mailSender.setPassword("azerty");
+	// 	return mailSender;
+	// }
 
 }
