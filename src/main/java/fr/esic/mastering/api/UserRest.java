@@ -1,11 +1,16 @@
 package fr.esic.mastering.api;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import fr.esic.mastering.entities.RoleType;
+import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +44,8 @@ public class UserRest {
     @Autowired
 	private final AuthenticationManager authManager;
 	private final JwtService jwtService = new JwtService();
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	// @PostMapping("login")
 	// public Optional<User> login(@RequestBody User user) {
@@ -102,6 +109,21 @@ public class UserRest {
 	public Optional<User> getAllUserWithoutPassword(@PathVariable Long id) {
 		return userRepository.findById(id);
 	}
+
+
+
+	//Create  user api
+	@PostMapping("/user/create")
+	public ResponseEntity<User> createUser(@RequestBody User user) {
+		// Encode the password before saving
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+		// Save the user with the encoded password
+		User savedUser = userRepository.save(user);
+
+		return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+	}
+
 
 	@PostMapping("/login_with_jwt")
 	public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {

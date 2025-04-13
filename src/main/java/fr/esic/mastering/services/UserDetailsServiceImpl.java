@@ -28,4 +28,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             List.of(new SimpleGrantedAuthority(user.getRole().getRoleUtilisateur().name()))
         );
     }
+
+
 }

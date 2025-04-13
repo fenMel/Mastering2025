@@ -108,26 +108,7 @@ public class PdfGenerationService {
             headerTable.addCell(logoCell);
 
             // Second cell for company info
-            PdfPCell infoCell = new PdfPCell();
-            infoCell.setBorder(Rectangle.NO_BORDER);
-            infoCell.setPaddingLeft(10);
-            infoCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-            // Add company name with colored, larger font
-            Font companyNameFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, PRIMARY_COLOR);
-            Paragraph companyName = new Paragraph("MASTERING", companyNameFont);
-            companyName.setAlignment(Element.ALIGN_LEFT);
-            infoCell.addElement(companyName);
-
-            // Add additional company information
-            Font infoFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, SECONDARY_COLOR);
-            Paragraph companyInfo = new Paragraph(
-                    "123 Business VAUGIRARD\n" +
-                            "75001 Paris, France\n" +
-                            "Tél: +33 1 23 45 67 89\n" +
-                            "Email: contact@mastering.com", infoFont);
-            companyInfo.setAlignment(Element.ALIGN_LEFT);
-            infoCell.addElement(companyInfo);
+            PdfPCell infoCell = getPdfPCell();
 
             headerTable.addCell(infoCell);
 
@@ -150,6 +131,31 @@ public class PdfGenerationService {
             document.add(header);
             document.add(new Paragraph("\n"));
         }
+    }
+
+    private static PdfPCell getPdfPCell() {
+        PdfPCell infoCell = new PdfPCell();
+        infoCell.setBorder(Rectangle.NO_BORDER);
+        infoCell.setPaddingLeft(10);
+        infoCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+        // Add company name with colored, larger font
+        Font companyNameFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, PRIMARY_COLOR);
+        Paragraph companyName = new Paragraph("MASTERING", companyNameFont);
+        companyName.setAlignment(Element.ALIGN_LEFT);
+        infoCell.addElement(companyName);
+
+        // Add additional company information
+        Font infoFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, SECONDARY_COLOR);
+        Paragraph companyInfo = new Paragraph(
+                """
+                        123 Business VAUGIRARD
+                        75001 Paris, France
+                        Tél: +33 1 23 45 67 89
+                        Email: contact@mastering.com""", infoFont);
+        companyInfo.setAlignment(Element.ALIGN_LEFT);
+        infoCell.addElement(companyInfo);
+        return infoCell;
     }
 
     private void addRecipientInfo(Document document, User user, ConvocationDTO convocation) throws DocumentException {
@@ -230,7 +236,7 @@ public class PdfGenerationService {
     private void addCandidateContent(Document document, ConvocationDTO convocation) throws DocumentException {
         // Add role heading
         Font roleFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, PRIMARY_COLOR);
-        Paragraph roleHeading = new Paragraph("Votre rôle : Candidat", roleFont);
+        Paragraph roleHeading = new Paragraph(" Infos session", roleFont);
         roleHeading.setSpacingBefore(10);
         roleHeading.setSpacingAfter(10);
         document.add(roleHeading);
@@ -332,8 +338,11 @@ public class PdfGenerationService {
         Font footerFont = new Font(Font.FontFamily.HELVETICA, 9, Font.ITALIC, SECONDARY_COLOR);
 
         Paragraph confirmation = new Paragraph(
-                "\nVeuillez confirmer votre présence en répondant à cet email." +
-                        "\nEn cas d'empêchement, merci de nous contacter au plus tôt au +33 1 23 45 67 89.",
+                """
+
+                        Veuillez confirmer votre présence en répondant à cet email.\
+
+                        En cas d'empêchement, merci de nous contacter au plus tôt au +33 1 23 45 67 89.""",
                 footerFont
         );
         document.add(confirmation);
