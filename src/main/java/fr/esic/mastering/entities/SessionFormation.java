@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +17,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-@Data @AllArgsConstructor @NoArgsConstructor @Entity @Table(name = "sessions_formation")
+@Data 
+@AllArgsConstructor 
+@NoArgsConstructor 
+@Entity 
+@Table(name = "sessions_formation")
 
 public class SessionFormation {
 	
@@ -25,6 +30,9 @@ public class SessionFormation {
 	
 		
 		 private Long id;
+
+		 @ManyToOne
+    	private Formation formation; // Chaque session est liée à une formation
 		 
 	
 	 @NotBlank(message = "Le titre est obligatoire")
