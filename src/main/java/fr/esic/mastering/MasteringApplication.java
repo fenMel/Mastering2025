@@ -1,6 +1,9 @@
 package fr.esic.mastering;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +12,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import fr.esic.mastering.entities.Formation;
 import fr.esic.mastering.entities.Role;
 import fr.esic.mastering.entities.RoleType;
+import fr.esic.mastering.entities.SessionFormation;
 import fr.esic.mastering.entities.User;
+import fr.esic.mastering.repository.FormationRepository;
 import fr.esic.mastering.repository.RoleRepository;
+import fr.esic.mastering.repository.SessionFormationRepository;
 import fr.esic.mastering.repository.UserRepository;
 
 import org.springframework.boot.SpringApplication;
@@ -30,6 +37,12 @@ public class MasteringApplication implements CommandLineRunner {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	@Autowired
+	private FormationRepository formationRepository;
+
+	@Autowired
+	private SessionFormationRepository sessionFormationRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -166,6 +179,159 @@ public class MasteringApplication implements CommandLineRunner {
 		 * Fin d'ajout des Users
 		 * --------------------------------
 		 */
+
+
+
+		 /*
+		 * -------------------------------- Ajout des formations
+		 * --------------------------------
+		 */
+		System.out.println("****************---------------Ajout des formations-----------------****************");
+
+		Formation iaFormation = formationRepository.findByNom("Master Intelligence Artificielle")
+				.orElseGet(() -> formationRepository.save(new Formation(
+						null,
+						"Master Intelligence Artificielle",
+						"Bac+5",
+						"RNCP12345",
+						"Formation sur l'intelligence artificielle, deep learning, machine learning.",
+						"2 ans",
+						"Licence Informatique ou équivalent",
+						"Maîtriser les techniques d'IA pour développer des solutions intelligentes.")));
+
+		Formation cyberFormation = formationRepository.findByNom("Master Cybersécurité")
+				.orElseGet(() -> formationRepository.save(new Formation(
+						null,
+						"Master Cybersécurité",
+						"Bac+5",
+						"RNCP23456",
+						"Formation sur la sécurité des systèmes informatiques et des réseaux.",
+						"2 ans",
+						"Licence Réseaux ou Informatique",
+						"Protéger les infrastructures numériques contre les cybermenaces.")));
+
+		Formation cloudFormation = formationRepository.findByNom("Master Cloud Computing")
+				.orElseGet(() -> formationRepository.save(new Formation(
+						null,
+						"Master Cloud Computing",
+						"Bac+5",
+						"RNCP34567",
+						"Apprentissage des solutions cloud, conteneurs, virtualisation.",
+						"2 ans",
+						"Licence ou équivalent en Informatique",
+						"Déployer des architectures cloud performantes et sécurisées.")));
+
+		Formation dataFormation = formationRepository.findByNom("Master Data Science")
+				.orElseGet(() -> formationRepository.save(new Formation(
+						null,
+						"Master Data Science",
+						"Bac+5",
+						"RNCP45678",
+						"Analyse de données, big data, statistiques avancées.",
+						"2 ans",
+						"Licence Mathématiques, Statistiques ou Informatique",
+						"Extraire des informations à partir de grands ensembles de données.")));
+
+		Formation gestionFormation = formationRepository.findByNom("Master Gestion de Projet")
+				.orElseGet(() -> formationRepository.save(new Formation(
+						null,
+						"Master Gestion de Projet",
+						"Bac+5",
+						"RNCP56789",
+						"Formation sur les méthodes de gestion de projet (agile, PMP, etc.).",
+						"2 ans",
+						"Licence ou équivalent en gestion ou informatique",
+						"Piloter efficacement des projets complexes en entreprise.")));
+
+
+				System.out.println("****************---------------°FIN° Ajout des Formations-----------------****************");
+
+
+		/*
+		 * --------------------------------
+		 * Fin d'ajout des Formations
+		 * --------------------------------
+		 */
+
+
+		/*
+		 * -------------------------------- Ajout des sessions de formations
+		 * --------------------------------
+		 */
+
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		System.out.println("****************---------------Ajout des sessions de formations-----------------****************");
+
+
+			SessionFormation session1 = new SessionFormation(
+                null,
+                "Session IA - Paris",
+                "Session avancée sur l’intelligence artificielle.",
+                LocalDate.parse("01/06/2025" , formatter),
+                LocalDate.parse("01/12/2025" , formatter),
+                iaFormation,
+                new ArrayList<>()
+        );
+				SessionFormation session2 = new SessionFormation(
+					null,
+					"Session Cybersécurité - Lyon",
+					"Session sécurité offensive et défensive.",
+					LocalDate.parse("15/06/2025", formatter),
+					LocalDate.parse("15/12/2025", formatter),
+					cyberFormation,
+					new ArrayList<>()
+			);
+	
+			SessionFormation session3 = new SessionFormation(
+					null,
+					"Session Cloud - Marseille",
+					"Session sur les solutions cloud modernes.",
+					LocalDate.parse("01/07/2025" , formatter),
+					LocalDate.parse("01/01/2026" , formatter),
+					cloudFormation,
+					new ArrayList<>()
+			);
+			
+	
+	
+			SessionFormation session4 = new SessionFormation(
+					null,
+					"Session Data Science - Toulouse",
+					"Session pour apprendre à analyser des données.",
+					LocalDate.parse("01/09/2025" , formatter),
+					LocalDate.parse("01/03/2026" , formatter),
+					dataFormation,
+					new ArrayList<>()
+			);
+			
+	
+			SessionFormation session5 = new SessionFormation(
+					null,
+					"Session Gestion de Projet - Nantes",
+					"Session sur les méthodes agiles et traditionnelles.",
+					LocalDate.parse("01/10/2025" , formatter),
+					LocalDate.parse("01/04/2026" , formatter),
+					gestionFormation,
+					new ArrayList<>()
+			);
+
+
+			Stream.of(session1, session2, session3, session4, session5)
+				.forEach(session -> {
+					sessionFormationRepository.save(session);
+				});
+
+		System.out.println("****************---------------°FIN° Ajout des users-----------------****************");
+
+		
+		};
+
+		/*
+		 * --------------------------------
+		 * Fin d'ajout des sessions de formations
+		 * --------------------------------
+		 */
 		
 		/*
 		 * --------------------------------
@@ -173,7 +339,7 @@ public class MasteringApplication implements CommandLineRunner {
 		 * --------------------------------
 		 */
 
-	}
+	
 
 	@Bean
 	public JavaMailSender javaMailSender() {
@@ -184,5 +350,4 @@ public class MasteringApplication implements CommandLineRunner {
 		mailSender.setPassword("azerty");
 		return mailSender;
 	}
-
 }

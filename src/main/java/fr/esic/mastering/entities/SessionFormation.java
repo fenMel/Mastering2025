@@ -2,11 +2,17 @@ package fr.esic.mastering.entities;
 
 
 import java.time.LocalDate;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -42,10 +48,24 @@ public class SessionFormation {
 	    @Future(message = "La date de fin doit être dans le futur")
 	    private LocalDate dateFin;
 
-	    @NotBlank(message = "Le formateur est obligatoire")
-	    private String formateur;
+	    
 	
-	   
+	  // ✅ Many-to-One avec Formation
+	  @ManyToOne
+	  @JoinColumn(name = "formation_id", nullable = false)
+	  private Formation formation;
+	  
+
+    // ✅ Many-to-Many avec Etudiant
+    @ManyToMany
+    @JoinTable(
+        name = "session_candidats",
+        joinColumns = @JoinColumn(name = "session"),
+        inverseJoinColumns = @JoinColumn(name = "candidat")
+    )
+    private List<User> users; // Liste des candidats associés à la session
+	    
+	  
 	}
 
 
