@@ -5,6 +5,7 @@ import java.util.*;
 
 import fr.esic.mastering.entities.RoleType;
 import fr.esic.mastering.services.EmailService;
+import fr.esic.mastering.services.UserAttributeService;
 import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -140,7 +141,7 @@ public class UserRest {
 
 	private void sendProfileCompletionEmail(User user, String token) {
 		try {
-			String subject = "Complete Your Profile - Action Required";
+			String subject = "Veuillez completer votre profile";
 
 			// Create a link to our own server
 			String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
@@ -148,11 +149,10 @@ public class UserRest {
 
 			String content =
 					"<p>Hello " + user.getPrenom() + " " + user.getNom() + ",</p>" +
-							"<p>Your account has been created. Please click the link below to complete your profile:</p>" +
-							"<p><a href='" + profileCompletionUrl + "'>Complete Your Profile</a></p>" +
-							"<p>This link will expire in 24 hours.</p>" +
-							"<p>If you did not request this account, please ignore this email.</p>" +
-							"<p>Regards,<br>Your Application Team</p>";
+							"<p>Vous avez été inscrit :</p>" +
+							"<p><a href='" + profileCompletionUrl + "'>completer votre profile</a></p>" +
+							"<p>Expire dans  24 heures.</p>" ;
+
 
 			emailService.sendHtmlEmail(user.getEmail(), subject, content);
 		} catch (Exception e) {

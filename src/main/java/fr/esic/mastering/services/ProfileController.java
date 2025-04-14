@@ -26,6 +26,10 @@ public class ProfileController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserAttributeService userAttributeService;
+
+
     // Show the profile completion form
     @GetMapping("/complete-profile")
     public String showCompleteProfileForm(@RequestParam String token, Model model) {
@@ -77,20 +81,14 @@ public class ProfileController {
 
         User user = userOpt.get();
 
-        // Verify that the submitted role matches the user's actual role
-        if (user.getRole().getRoleUtilisateur() != roleType) {
-            model.addAttribute("error", "Invalid form submission");
-            return "error";
-        }
-
-        // Update common user fields
+        // Update basic fields
         user.setNom(userForm.getNom());
         user.setPrenom(userForm.getPrenom());
         user.setEmail(userForm.getEmail());
         user.setTel(userForm.getTel());
         user.setLieuxDeNaissance(userForm.getLieuxDeNaissance());
 
-        // Convert String to Date for dateNaissance
+        // Handle date conversion
         try {
             if (userForm.getDateNaissance() != null && !userForm.getDateNaissance().isEmpty()) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -98,10 +96,8 @@ public class ProfileController {
                 user.setDateNaissance(date);
             }
         } catch (ParseException e) {
-            // Log the error
+            // Log the error but continue with other updates
             System.err.println("Error parsing date: " + e.getMessage());
-            model.addAttribute("dateError", "Invalid date format");
-            // Continue with the rest of the updates
         }
 
         // Update password if provided
@@ -109,26 +105,50 @@ public class ProfileController {
             user.setPassword(passwordEncoder.encode(password));
         }
 
-        // Process role-specific fields
-        processRoleSpecificFields(user, userForm, roleType);
+        // Save common user data
+        userRepository.save(user);
+
+        // Save role-specific attributes
+        saveRoleSpecificAttributes(user.getId(), roleType, userForm);
 
         // Clear the token
         user.setResetToken(null);
         user.setResetTokenExpiry(null);
-
         userRepository.save(user);
 
-        // Add success message
         model.addAttribute("success", true);
         model.addAttribute("roleType", roleType);
-
 
         return "profile/completion-success";
     }
 
+    private void saveRoleSpecificAttributes(Long userId, RoleType roleType, UserProfileForm userForm) {
+        switch (roleType) {
+            case JURY:
+                // Save fields that exist in your UserProfileForm
+                userAttributeService.setAttribute(userId, "specialization", userForm.getSpecialization());
+                userAttributeService.setAttribute(userId, "availability", userForm.getAvailability());
+                break;
+
+            case CANDIDAT:
+                // Save fields that exist in your UserProfileForm
+                userAttributeService.setAttribute(userId, "cv", userForm.getCv());
+                userAttributeService.setAttribute(userId, "motivationLetter", userForm.getMotivationLetter());
+                break;
+
+            case CORDINATEUR:
+                // Save fields that exist in your UserProfileForm
+                userAttributeService.setAttribute(userId, "department", userForm.getDepartment());
+                break;
+        }
+    }
+
+
     /**
      * Process role-specific fields from the form
      */
+
+
     private void processRoleSpecificFields(User user, UserProfileForm userForm, RoleType roleType) {
         // Store role-specific information in appropriate fields or related tables
         // This implementation will depend on your data model
