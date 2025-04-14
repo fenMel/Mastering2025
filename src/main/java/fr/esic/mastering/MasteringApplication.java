@@ -86,7 +86,7 @@ public class MasteringApplication implements CommandLineRunner {
 		System.out.println("****************---------------Ajout des users-----------------****************");
 
 		// Coordinateurs (3)
-		User coord1 = new User(null, "Durand", "Luc", sdf.parse("05/02/1985"), "0601122334", "chancedarlon@gmail.com",
+		User coord1 = new User(null, "Durand", "Luc", sdf.parse("05/02/1985"), "0601122334", "dede@gmail.com",
 				"Lyon", passwordEncoder.encode("LucCoord123"), roleCoordinateur);
 		User coord2 = new User(null, "Morel", "Sophie", sdf.parse("12/03/1984"), "0601234567", "sophie.morel@gmail.com",
 				"Nice", passwordEncoder.encode("SophieCoord123"), roleCoordinateur);
@@ -134,8 +134,8 @@ public class MasteringApplication implements CommandLineRunner {
 		// Candidats (10)
 		User cand1 = new User(null, "Remsou", "Remi", sdf.parse("09/01/1995"), "0601667788", "remsou28@gmail.com",
 				"Dakar", passwordEncoder.encode("Remsou28"), roleCandidate);
-		User cand2 = new User(null, "Garcia", "Lucas", sdf.parse("20/05/1996"), "0601778899", "lucas.garcia@gmail.com",
-				"Madrid", passwordEncoder.encode("LucasCand123"), roleCandidate);
+		User cand2 = new User(null, "Chance", "Lucas", sdf.parse("20/05/1996"), "0601778899", "cdmilandou@gmail.com",
+				"Madrid", passwordEncoder.encode("Chance123"), roleCandidate);
 		User cand3 = new User(null, "Kim", "Jin", sdf.parse("01/07/1994"), "0601889900", "jin.kim@gmail.com", "Seoul",
 				passwordEncoder.encode("JinCand123"), roleCandidate);
 		User cand4 = new User(null, "Leblanc", "Eva", sdf.parse("14/02/1993"), "0601990011", "eva.leblanc@gmail.com",
@@ -154,7 +154,12 @@ public class MasteringApplication implements CommandLineRunner {
 				"Busan", passwordEncoder.encode("MinCand123"), roleCandidate);
 
 		Stream.of(coord1, coord2, coord3, appr1, appr2, appr3, appr4, appr5, jury1, jury2, jury3, jury4, jury5, sup1,
-				sup2, staff1, staff2, staff3, cand1, cand2, cand3, cand4, cand5, cand6, cand7, cand8, cand9, cand10)
+						sup2, staff1, staff2, staff3, cand1, cand2, cand3, cand4, cand5, cand6, cand7, cand8, cand9, cand10)
+				.peek(user -> {
+					// Set token fields for all users
+					user.setResetToken(null);
+					user.setResetTokenExpiry(null);
+				})
 				.forEach(user -> {
 					userRepository.save(user);
 				});

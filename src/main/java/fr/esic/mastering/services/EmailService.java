@@ -30,4 +30,15 @@ public class EmailService {
         
         emailSender.send(message);
     }
+
+    public void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlContent, true); // true indicates HTML content
+
+        emailSender.send(message);
+    }
 }

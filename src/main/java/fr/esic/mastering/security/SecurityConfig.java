@@ -35,6 +35,8 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/submit/**", "/login_with_jwt/**").permitAll()
+                    .requestMatchers("/complete-profile", "/complete-profile/**").permitAll()
+                    .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
