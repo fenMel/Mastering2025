@@ -34,25 +34,28 @@ public class SessionFormationService {
     }
 
     // ✅ Créer une session
-    public SessionFormation createSession(SessionFormation session) {
-        return sessionFormationRepository.save(session);
+    public SessionFormation createSessionFormation(SessionFormation sessionFormation) {
+        return sessionFormationRepository.save(sessionFormation);
     }
 
     // ✅ Mettre à jour une session
-    public SessionFormation updateSession(Long id, SessionFormation updatedSession) {
-        SessionFormation session = getSessionById(id);
+    public SessionFormation updateSessionFormation(Long id, SessionFormation updatedSessionFormation) {
+        SessionFormation sessionFormation = getSessionById(id);
 
-        session.setTitre(updatedSession.getTitre());
-        session.setDescription(updatedSession.getDescription());
-        session.setDateDebut(updatedSession.getDateDebut());
-        session.setDateFin(updatedSession.getDateFin());
-        session.setFormation(updatedSession.getFormation());
-        return sessionFormationRepository.save(session);
+        sessionFormation.setTitre(updatedSessionFormation.getTitre());
+        sessionFormation.setDescription(updatedSessionFormation.getDescription());
+        sessionFormation.setDateDebut(updatedSessionFormation.getDateDebut());
+        sessionFormation.setDateFin(updatedSessionFormation.getDateFin());
+        sessionFormation.setFormation(updatedSessionFormation.getFormation());
+        return sessionFormationRepository.save(sessionFormation);
     }
 
     // ✅ Supprimer une session
+   
+
+    // ✅ Supprimer une session Forlation
     @Transactional
-    public void deleteSession(Long id) {
+    public void deleteSessionFormation(Long id) {
         SessionFormation session = getSessionById(id);
         sessionFormationRepository.delete(session);
     }

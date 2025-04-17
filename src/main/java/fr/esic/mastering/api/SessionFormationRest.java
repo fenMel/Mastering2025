@@ -19,7 +19,7 @@ import fr.esic.mastering.services.SessionFormationService;
 
 
     @RestController
-@RequestMapping("/api/sessions")
+@RequestMapping("/api/sessionsFormation")
 public class SessionFormationRest {
 
     @Autowired
@@ -27,9 +27,9 @@ public class SessionFormationRest {
 
     // Ajouter une session
     @PostMapping
-    public ResponseEntity<SessionFormation> createSession(@RequestBody SessionFormation session) {
-        SessionFormation createdSession = sessionFormationService.createSession(session);
-        return ResponseEntity.ok(createdSession);
+    public ResponseEntity<SessionFormation> createSessionFormation(@RequestBody SessionFormation sessionFormation) {
+        SessionFormation createdSessionFormation = sessionFormationService.createSessionFormation(sessionFormation);
+        return ResponseEntity.ok(createdSessionFormation);
     }
 
     // Récupérer toutes les sessions
@@ -54,15 +54,15 @@ public class SessionFormationRest {
 
     // Mettre à jour une session
     @PutMapping("/{id}")
-    public ResponseEntity<SessionFormation> updateSession(@PathVariable Long id, @RequestBody SessionFormation sessionDetails) {
-        SessionFormation updatedSession = sessionFormationService.updateSession(id, sessionDetails);
+    public ResponseEntity<SessionFormation> updateSessionFormation(@PathVariable Long id, @RequestBody SessionFormation sessionDetails) {
+        SessionFormation updatedSession = sessionFormationService.updateSessionFormation(id, sessionDetails);
         return ResponseEntity.ok(updatedSession);
     }
 
     // Supprimer une session
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
-        sessionFormationService.deleteSession(id);
+    public ResponseEntity<Void> deleteSessionFormation(@PathVariable Long id) {
+        sessionFormationService.deleteSessionFormation(id);
         return ResponseEntity.noContent().build();
     }
 }
