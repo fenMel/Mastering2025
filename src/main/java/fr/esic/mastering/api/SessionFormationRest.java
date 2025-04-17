@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.esic.mastering.entities.SessionFormation;
 import fr.esic.mastering.services.SessionFormationService;
+import jakarta.validation.Valid;
 
 
 
@@ -26,30 +27,17 @@ public class SessionFormationRest {
     private SessionFormationService sessionFormationService;
 
     // Ajouter une session
+
     @PostMapping
-    public ResponseEntity<SessionFormation> createSessionFormation(@RequestBody SessionFormation sessionFormation) {
-        SessionFormation createdSessionFormation = sessionFormationService.createSessionFormation(sessionFormation);
-        return ResponseEntity.ok(createdSessionFormation);
-    }
+public ResponseEntity<?> createSessionFormation(@Valid @RequestBody SessionFormation sessionFormation) {
+    return ResponseEntity.ok(sessionFormationService.createSessionFormation(sessionFormation));
+}
 
     // Récupérer toutes les sessions
     @GetMapping
     public ResponseEntity<List<SessionFormation>> getAllSessions() {
         List<SessionFormation> sessions = sessionFormationService.getAllSessions();
         return ResponseEntity.ok(sessions);
-    }
-
-    // Récupérer une session par ID
-    @GetMapping("/{id}")
-    public ResponseEntity<SessionFormation> getSessionById(@PathVariable Long id) {
-        SessionFormation session = sessionFormationService.getSessionById(id);
-        return ResponseEntity.ok(session);
-    }
-    // Récupérer une session par Titre
-    @GetMapping("/{titre}")
-    public ResponseEntity<SessionFormation> getSessionByTitre(@PathVariable String titre) {
-        SessionFormation session = sessionFormationService.getSessionByTitre(titre);
-        return ResponseEntity.ok(session);
     }
 
     // Mettre à jour une session
@@ -65,4 +53,21 @@ public class SessionFormationRest {
         sessionFormationService.deleteSessionFormation(id);
         return ResponseEntity.noContent().build();
     }
+
+    // ✅ GET /api/sessionsFormation/id/5
+@GetMapping("/id/{id}")
+public ResponseEntity<SessionFormation> getSessionById(@PathVariable Long id) {
+    SessionFormation session = sessionFormationService.getSessionById(id);
+    return ResponseEntity.ok(session);
+}
+
+// ✅ GET /api/sessionsFormation/titre/Java Avancé
+@GetMapping("/titre/{titre}")
+public ResponseEntity<SessionFormation> getSessionByTitre(@PathVariable String titre) {
+    SessionFormation session = sessionFormationService.getSessionByTitre(titre);
+    return ResponseEntity.ok(session);
+}
+
+
+
 }
