@@ -36,8 +36,7 @@ public class SessionFormation {
 		
 		 private Long id;
 
-		 @ManyToOne
-    	private Formation formation; // Chaque session est liée à une formation
+		// Removed duplicate 'formation' field to avoid conflict
 		 
 	
 	 @NotBlank(message = "Le titre est obligatoire")
