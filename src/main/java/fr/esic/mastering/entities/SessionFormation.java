@@ -69,6 +69,8 @@ public class SessionFormation {
         joinColumns = @JoinColumn(name = "session"),
         inverseJoinColumns = @JoinColumn(name = "candidat")
     )
+
+	
     private List<User> users; // Liste des candidats associés à la session
 	    
 	  
