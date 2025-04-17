@@ -1,11 +1,17 @@
 package fr.esic.mastering.api;
 
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
+import fr.esic.mastering.entities.RoleType;
+import fr.esic.mastering.services.EmailService;
+import fr.esic.mastering.services.UserAttributeService;
+import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +34,7 @@ import fr.esic.mastering.security.JwtService;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.List;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @CrossOrigin("*")
@@ -39,7 +45,11 @@ public class UserRest {
     @Autowired
 	private final AuthenticationManager authManager;
 	private final JwtService jwtService = new JwtService();
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private EmailService emailService;
 	// @PostMapping("login")
 	// public Optional<User> login(@RequestBody User user) {
 	// return userRepository.findByEmailAndPassword(user.getEmail(),
@@ -102,6 +112,55 @@ public class UserRest {
 	public Optional<User> getAllUserWithoutPassword(@PathVariable Long id) {
 		return userRepository.findById(id);
 	}
+
+
+
+	//Create  user api
+	@PostMapping("/user/create")
+	public ResponseEntity<User> createUser(@RequestBody User user) {
+		// Generate token for profile completion
+		String token = UUID.randomUUID().toString();
+		user.setResetToken(token);
+		user.setResetTokenExpiry(LocalDateTime.now().plusHours(24));
+
+		// Encode the password before saving (use a temporary password if none provided)
+		if (user.getPassword() == null || user.getPassword().isEmpty()) {
+			user.setPassword(passwordEncoder.encode("TemporaryPassword123")); // This will be changed by the user
+		} else {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+		}
+
+		// Save the user
+		User savedUser = userRepository.save(user);
+
+		// Send email with profile completion link
+		sendProfileCompletionEmail(savedUser, token);
+
+		return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+	}
+
+	private void sendProfileCompletionEmail(User user, String token) {
+		try {
+			String subject = "Veuillez completer votre profile";
+
+			// Create a link to our own server
+			String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+			String profileCompletionUrl = baseUrl + "/complete-profile?token=" + token;
+
+			String content =
+					"<p>Hello " + user.getPrenom() + " " + user.getNom() + ",</p>" +
+							"<p>Vous avez été inscrit :</p>" +
+							"<p><a href='" + profileCompletionUrl + "'>completer votre profile</a></p>" +
+							"<p>Expire dans  24 heures.</p>" ;
+
+
+			emailService.sendHtmlEmail(user.getEmail(), subject, content);
+		} catch (Exception e) {
+			// Log the error but don't prevent user creation
+			System.err.println("Failed to send profile completion email: " + e.getMessage());
+		}
+	}
+
 
 	@PostMapping("/login_with_jwt")
 	public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {

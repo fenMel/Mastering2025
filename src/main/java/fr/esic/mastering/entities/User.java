@@ -1,20 +1,11 @@
 package fr.esic.mastering.entities;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,5 +32,33 @@ public class User {
 	@ManyToOne
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
+
+
+    // Add getters and setters
+    @Setter
+    @Getter
+    @Column(name = "reset_token")
+	private String resetToken;
+
+	@Setter
+    @Getter
+    @Column(name = "reset_token_expiry")
+	private LocalDateTime resetTokenExpiry;
+
+
+
+	// Constructor matching the arguments in MasteringApplication.java
+	public User(Long id, String nom, String prenom, Date DateNaissance, String tel, String email,
+				String lieuxDeNaissance, String password, Role role) {
+		this.id = id;
+		this.nom = nom;
+		this.prenom = prenom;
+		this.DateNaissance = DateNaissance;
+		this.tel = tel;
+		this.email = email;
+		this.lieuxDeNaissance = lieuxDeNaissance;
+		this.password = password;
+		this.role = role;
+	}
 
 }

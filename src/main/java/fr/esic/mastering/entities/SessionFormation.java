@@ -22,7 +22,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-@Data @AllArgsConstructor @NoArgsConstructor @Entity @Table(name = "sessions_formation")
+@Data 
+@AllArgsConstructor 
+@NoArgsConstructor 
+@Entity 
+@Table(name = "sessions_formation")
 
 public class SessionFormation {
 	
@@ -31,6 +35,9 @@ public class SessionFormation {
 	
 		
 		 private Long id;
+
+		 @ManyToOne
+    	private Formation formation; // Chaque session est liée à une formation
 		 
 	
 	 @NotBlank(message = "Le titre est obligatoire")

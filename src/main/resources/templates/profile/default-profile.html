@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Complete Your Profile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h3>Complete Your Profile</h3>
+        </div>
+        <div class="card-body">
+          <form th:action="@{/complete-profile}" method="post">
+            <input type="hidden" name="token" th:value="${token}">
+            <input type="hidden" name="roleType" th:value="${roleType}">
+
+            <!-- Personal Information -->
+            <h4>Personal Information</h4>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="nom">Nom</label>
+                  <input type="text" class="form-control" id="nom" name="nom"
+                         th:value="${user.nom}" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="prenom">Prénom</label>
+                  <input type="text" class="form-control" id="prenom" name="prenom"
+                         th:value="${user.prenom}" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" class="form-control" id="email" name="email"
+                         th:value="${user.email}" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="tel">Téléphone</label>
+                  <input type="tel" class="form-control" id="tel" name="tel"
+                         th:value="${user.tel}">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="lieuxDeNaissance">Lieu de Naissance</label>
+                  <input type="text" class="form-control" id="lieuxDeNaissance"
+                         name="lieuxDeNaissance" th:value="${user.lieuxDeNaissance}">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="dateNaissance">Date de Naissance</label>
+                  <input type="date" class="form-control" id="dateNaissance"
+                         name="dateNaissance" th:value="${user.dateNaissance}">
+                </div>
+              </div>
+            </div>
+
+            <!-- Password -->
+            <h4>Security</h4>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="password">Nouveau Mot de Passe</label>
+                  <input type="password" class="form-control" id="password" name="password">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="confirmPassword">Confirmer Mot de Passe</label>
+                  <input type="password" class="form-control" id="confirmPassword">
+                </div>
+              </div>
+            </div>
+
+            <!-- Role information -->
+            <div class="alert alert-info">
+              <p>Your role: <strong th:text="${roleType}">ROLE</strong></p>
+              <p>This is a default profile form. Basic information has been collected. Your account administrator may contact you for additional details specific to your role.</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-4">Complete Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Simple password matching validation
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password && password !== confirmPassword) {
+      e.preventDefault();
+      alert('Les mots de passe ne correspondent pas!');
+    }
+  });
+</script>
+</body>
+</html>

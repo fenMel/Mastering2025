@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering - Profile Completed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #3A5173;
+            background-image: linear-gradient(135deg, #3A5173 0%, #2c5d8f 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .success-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            padding: 3rem;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3A5173;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .form-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(90deg, #3A73B7, #5a9be0);
+            border-radius: 3px;
+        }
+
+        .success-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #43c6ac, #4bb2df);
+            color: white;
+            font-size: 3.5rem;
+            border-radius: 50%;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(67, 198, 172, 0.3);
+            animation: successPop 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes successPop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            20%, 100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .success-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.6s 0.3s forwards;
+            opacity: 0;
+        }
+
+        .success-message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.6s 0.5s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .role-specific-message {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: left;
+            border-left: 5px solid #4bb2df;
+            animation: fadeIn 0.6s 0.7s forwards;
+            opacity: 0;
+        }
+
+        .role-specific-message h4 {
+            color: #3A5173;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .role-specific-message p {
+            color: #5a6268;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-specific-message ul {
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .role-specific-message li {
+            margin-bottom: 0.5rem;
+            color: #5a6268;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #3A73B7, #5a9be0);
+            color: white;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(58, 115, 183, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            animation: fadeIn 0.6s 0.9s forwards;
+            opacity: 0;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(58, 115, 183, 0.4);
+            background: linear-gradient(135deg, #3567a3, #4a8cd0);
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Loading spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3A73B7;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            color: #3A5173;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1e2c3a 0%, #2c3e50 100%);
+        }
+
+        body.dark-mode .success-container {
+            background-color: #2c3e50;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .form-logo {
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .success-title {
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .success-message {
+            color: #bdc3c7;
+        }
+
+        body.dark-mode .role-specific-message {
+            background: linear-gradient(to right, #34495e, #2c3e50);
+            border-left-color: #3498db;
+        }
+
+        body.dark-mode .role-specific-message h4 {
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .role-specific-message p,
+        body.dark-mode .role-specific-message li {
+            color: #bdc3c7;
+        }
+
+        body.dark-mode .loading-overlay {
+            background-color: rgba(44, 62, 80, 0.9);
+        }
+
+        body.dark-mode .loading-text {
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .theme-toggle {
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .success-container {
+                padding: 2rem;
+            }
+
+            .success-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 3rem;
+            }
+
+            .success-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Chargement en cours...</div>
+</div>
+
+<div class="success-container" id="success-container" style="display: none;">
+    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="form-header">
+        <div class="form-logo">MASTERING</div>
+    </div>
+
+    <div class="success-icon">
+        <i class="fas fa-check"></i>
+    </div>
+
+    <h1 class="success-title">Profil Complété!</h1>
+    <p class="success-message">Félicitations! Votre profil a été mis à jour avec succès. Nous sommes ravis de vous compter parmi notre communauté.</p>
+
+    <!-- Role specific message section -->
+    <div class="role-specific-message" th:if="${roleType.name() == 'CANDIDAT'}">
+        <h4><i class="fas fa-user-graduate"></i> Bienvenue, Candidat!</h4>
+        <p>En tant que candidat, vous pouvez maintenant:</p>
+        <ul>
+            <li>Postuler aux sessions d'évaluation disponibles</li>
+            <li>Suivre l'état de vos candidatures</li>
+            <li>Recevoir des feedbacks sur vos performances</li>
+        </ul>
+    </div>
+
+    <div class="role-specific-message" th:if="${roleType.name() == 'JURY'}">
+        <h4><i class="fas fa-user-tie"></i> Bienvenue, Membre du Jury!</h4>
+        <p>En tant que membre du jury, vous pouvez maintenant:</p>
+        <ul>
+            <li>Accéder aux sessions d'évaluation planifiées</li>
+            <li>Évaluer les candidats selon les critères établis</li>
+            <li>Soumettre vos notes et commentaires</li>
+        </ul>
+    </div>
+
+    <div class="role-specific-message" th:if="${roleType.name() == 'CORDINATEUR'}">
+        <h4><i class="fas fa-user-cog"></i> Bienvenue, Coordinateur!</h4>
+        <p>En tant que coordinateur, vous pouvez maintenant:</p>
+        <ul>
+            <li>Gérer les sessions d'évaluation</li>
+            <li>Assigner les jurys aux candidats</li>
+            <li>Suivre le déroulement des évaluations</li>
+            <li>Générer des rapports et statistiques</li>
+        </ul>
+    </div>
+
+    <a href="/login" class="btn">Aller à la page de connexion <i class="fas fa-arrow-right"></i></a>
+</div>
+
+<script>
+    // Simulate loading for 1.5 seconds then show success content
+    window.onload = function() {
+        setTimeout(function() {
+            document.getElementById('loading-overlay').style.opacity = '0';
+            document.getElementById('success-container').style.display = 'block';
+
+            setTimeout(function() {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }, 300);
+        }, 1500);
+    };
+
+    // Dark mode toggle
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+
+        const icon = this.querySelector('i');
+        if (icon.classList.contains('fa-moon')) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        }
+    });
+</script>
+</body>
+</html>
