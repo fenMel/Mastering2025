@@ -6,31 +6,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
+import fr.esic.mastering.entities.*;
+import fr.esic.mastering.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import fr.esic.mastering.entities.Formation;
-import fr.esic.mastering.entities.Role;
-import fr.esic.mastering.entities.RoleType;
-import fr.esic.mastering.entities.SessionFormation;
-import fr.esic.mastering.entities.SessionSoutenance;
-import fr.esic.mastering.entities.User;
-import fr.esic.mastering.repository.FormationRepository;
-import fr.esic.mastering.repository.RoleRepository;
-import fr.esic.mastering.repository.SessionFormationRepository;
-import fr.esic.mastering.repository.UserRepository;
-import fr.esic.mastering.repository.SessionFormationRepository;
-import fr.esic.mastering.repository.SessionSoutenanceRepository;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
@@ -45,19 +27,18 @@ public class MasteringApplication implements CommandLineRunner {
 	private FormationRepository formationRepository;
 
 	@Autowired
+	private EvaluationRepository evaluationRepository;
+
+	@Autowired
 	private SessionFormationRepository sessionFormationRepository;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-	
 
 	public static void main(String[] args) {
 		SpringApplication.run(MasteringApplication.class, args);
 		System.out.println("lancement terminé");
 	}
-	
-
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -91,11 +72,6 @@ public class MasteringApplication implements CommandLineRunner {
 					roleRepository.save(role);
 				});
 		System.out.println("****************---------------°FIN° Ajout des roles-----------------****************");
-
-		/*
-		 * -------------------------------- Fin d'ajout des roles
-		 * --------------------------------
-		 */
 
 		/*
 		 * -------------------------------- Ajout des Users
@@ -184,27 +160,7 @@ public class MasteringApplication implements CommandLineRunner {
 
 		System.out.println("****************---------------°FIN° Ajout des users-----------------****************");
 
-
-			/*
-		 * -------------------------------- Ajout des formations
-		 * --------------------------------
-		 */
-
-		
-
-
-
-		
-
 		/*
-		 * -------------------------------- 
-		 * Fin d'ajout des Users
-		 * --------------------------------
-		 */
-
-
-
-		 /*
 		 * -------------------------------- Ajout des formations
 		 * --------------------------------
 		 */
@@ -265,114 +221,155 @@ public class MasteringApplication implements CommandLineRunner {
 						"Licence ou équivalent en gestion ou informatique",
 						"Piloter efficacement des projets complexes en entreprise.")));
 
-
-				System.out.println("****************---------------°FIN° Ajout des Formations-----------------****************");
-
-
-		/*
-		 * --------------------------------
-		 * Fin d'ajout des Formations
-		 * --------------------------------
-		 */
-
+		System.out.println("****************---------------°FIN° Ajout des Formations-----------------****************");
 
 		/*
 		 * -------------------------------- Ajout des sessions de formations
 		 * --------------------------------
 		 */
-
-
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		System.out.println("****************---------------Ajout des sessions de formations-----------------****************");
 
+		SessionFormation session1 = new SessionFormation(
+				null,
+				"Session IA - Paris",
+				"Session avancée sur l'intelligence artificielle.",
+				LocalDate.parse("01/06/2025", formatter),
+				LocalDate.parse("01/12/2025", formatter),
+				iaFormation,
+				new ArrayList<>()
+		);
 
-			SessionFormation session1 = new SessionFormation(
-                null,
-                "Session IA - Paris",
-                "Session avancée sur l’intelligence artificielle.",
-                LocalDate.parse("01/06/2025" , formatter),
-                LocalDate.parse("01/12/2025" , formatter),
-                iaFormation,
-                new ArrayList<>()
-        );
-				SessionFormation session2 = new SessionFormation(
-					null,
-					"Session Cybersécurité - Lyon",
-					"Session sécurité offensive et défensive.",
-					LocalDate.parse("15/06/2025", formatter),
-					LocalDate.parse("15/12/2025", formatter),
-					cyberFormation,
-					new ArrayList<>()
-			);
-	
-			SessionFormation session3 = new SessionFormation(
-					null,
-					"Session Cloud - Marseille",
-					"Session sur les solutions cloud modernes.",
-					LocalDate.parse("01/07/2025" , formatter),
-					LocalDate.parse("01/01/2026" , formatter),
-					cloudFormation,
-					new ArrayList<>()
-			);
-			
-	
-	
-			SessionFormation session4 = new SessionFormation(
-					null,
-					"Session Data Science - Toulouse",
-					"Session pour apprendre à analyser des données.",
-					LocalDate.parse("01/09/2025" , formatter),
-					LocalDate.parse("01/03/2026" , formatter),
-					dataFormation,
-					new ArrayList<>()
-			);
-			
-	
-			SessionFormation session5 = new SessionFormation(
-					null,
-					"Session Gestion de Projet - Nantes",
-					"Session sur les méthodes agiles et traditionnelles.",
-					LocalDate.parse("01/10/2025" , formatter),
-					LocalDate.parse("01/04/2026" , formatter),
-					gestionFormation,
-					new ArrayList<>()
-			);
+		SessionFormation session2 = new SessionFormation(
+				null,
+				"Session Cybersécurité - Lyon",
+				"Session sécurité offensive et défensive.",
+				LocalDate.parse("15/06/2025", formatter),
+				LocalDate.parse("15/12/2025", formatter),
+				cyberFormation,
+				new ArrayList<>()
+		);
 
+		SessionFormation session3 = new SessionFormation(
+				null,
+				"Session Cloud - Marseille",
+				"Session sur les solutions cloud modernes.",
+				LocalDate.parse("01/07/2025", formatter),
+				LocalDate.parse("01/01/2026", formatter),
+				cloudFormation,
+				new ArrayList<>()
+		);
 
-			Stream.of(session1, session2, session3, session4, session5)
+		SessionFormation session4 = new SessionFormation(
+				null,
+				"Session Data Science - Toulouse",
+				"Session pour apprendre à analyser des données.",
+				LocalDate.parse("01/09/2025", formatter),
+				LocalDate.parse("01/03/2026", formatter),
+				dataFormation,
+				new ArrayList<>()
+		);
+
+		SessionFormation session5 = new SessionFormation(
+				null,
+				"Session Gestion de Projet - Nantes",
+				"Session sur les méthodes agiles et traditionnelles.",
+				LocalDate.parse("01/10/2025", formatter),
+				LocalDate.parse("01/04/2026", formatter),
+				gestionFormation,
+				new ArrayList<>()
+		);
+
+		Stream.of(session1, session2, session3, session4, session5)
 				.forEach(session -> {
 					sessionFormationRepository.save(session);
 				});
 
-		System.out.println("****************---------------°FIN° Ajout des users-----------------****************");
-
-		
-		};
+		System.out.println("****************---------------°FIN° Ajout des sessions de formations-----------------****************");
 
 		/*
-		 * --------------------------------
-		 * Fin d'ajout des sessions de formations
-		 * --------------------------------
-		 */
-		
-		/*
-		 * --------------------------------
-		 * Ajout 
+		 * -------------------------------- Ajout des évaluations
 		 * --------------------------------
 		 */
+		System.out.println("****************---------------Ajout des évaluations-----------------****************");
 
-	
+		// Récupération des utilisateurs pour créer les évaluations
+		jury1 = userRepository.findByEmail("elise.benoit@gmail.com").orElse(null);
+		jury2 = userRepository.findByEmail("mario.rossi@gmail.com").orElse(null);
+		jury3 = userRepository.findByEmail("ines.lopez@gmail.com").orElse(null);
 
+		cand1 = userRepository.findByEmail("remsou28@gmail.com").orElse(null);
+		cand2 = userRepository.findByEmail("cdmilandou@gmail.com").orElse(null);
+		cand3 = userRepository.findByEmail("jin.kim@gmail.com").orElse(null);
+		cand4 = userRepository.findByEmail("eva.leblanc@gmail.com").orElse(null);
+		cand5 = userRepository.findByEmail("emily.smith@gmail.com").orElse(null);
+
+		// Création des évaluations
+		Evaluation eval1 = new Evaluation(
+				null,
+				jury1,
+				cand1,
+				"Excellente présentation sur l'intelligence artificielle. Concepts bien maîtrisés.",
+				17.5, 16.0, 18.0, 17.0, 16.5,
+				0.0 // La moyenne sera calculée automatiquement
+		);
+		eval1.calculerMoyenne();
+
+		Evaluation eval2 = new Evaluation(
+				null,
+				jury2,
+				cand2,
+				"Bonne présentation sur la cybersécurité. Quelques imprécisions techniques.",
+				15.0, 14.5, 16.0, 15.5, 14.0,
+				0.0
+		);
+		eval2.calculerMoyenne();
+
+		Evaluation eval3 = new Evaluation(
+				null,
+				jury3,
+				cand3,
+				"Présentation satisfaisante mais manque d'exemples concrets.",
+				13.5, 14.0, 12.5, 13.0, 15.0,
+				0.0
+		);
+		eval3.calculerMoyenne();
+
+		Evaluation eval4 = new Evaluation(
+				null,
+				jury1,
+				cand4,
+				"Très bonne maîtrise du sujet et excellente réponse aux questions.",
+				18.0, 17.5, 17.0, 18.5, 19.0,
+				0.0
+		);
+		eval4.calculerMoyenne();
+
+		Evaluation eval5 = new Evaluation(
+				null,
+				jury2,
+				cand5,
+				"Présentation claire mais contenu un peu superficiel.",
+				16.0, 13.5, 17.0, 14.0, 15.5,
+				0.0
+		);
+		eval5.calculerMoyenne();
+
+		Stream.of(eval1, eval2, eval3, eval4, eval5)
+				.forEach(evaluation -> {
+					evaluationRepository.save(evaluation);
+				});
+
+		System.out.println("****************---------------°FIN° Ajout des évaluations-----------------****************");
+	}
 
 	// @Bean
 	// public JavaMailSender javaMailSender() {
-	// 	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-	// 	mailSender.setHost("smtp.example.com");
-	// 	mailSender.setPort(587);
-	// 	mailSender.setUsername("yanatremy09@gmail.com");
-	// 	mailSender.setPassword("azerty");
-	// 	return mailSender;
+	//     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+	//     mailSender.setHost("smtp.example.com");
+	//     mailSender.setPort(587);
+	//     mailSender.setUsername("yanatremy09@gmail.com");
+	//     mailSender.setPassword("azerty");
+	//     return mailSender;
 	// }
-
 }
-
