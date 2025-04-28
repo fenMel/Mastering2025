@@ -25,7 +25,7 @@ public class SessionSoutenanceController {
     @Autowired
     private SessionSoutenanceService sessionSoutenanceService;
 
-    @GetMapping("/")
+    @GetMapping
     public List<SessionSoutenance> getAllSessions() {
         return sessionSoutenanceService.getAllSessions();
     }

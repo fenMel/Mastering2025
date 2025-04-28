@@ -2,6 +2,7 @@ package fr.esic.mastering;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.stream.Stream;
@@ -13,6 +14,27 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import fr.esic.mastering.entities.Formation;
+import fr.esic.mastering.entities.Role;
+import fr.esic.mastering.entities.RoleType;
+import fr.esic.mastering.entities.SessionFormation;
+import fr.esic.mastering.entities.SessionSoutenance;
+import fr.esic.mastering.entities.User;
+import fr.esic.mastering.repository.FormationRepository;
+import fr.esic.mastering.repository.RoleRepository;
+import fr.esic.mastering.repository.SessionFormationRepository;
+import fr.esic.mastering.repository.UserRepository;
+import fr.esic.mastering.repository.SessionFormationRepository;
+import fr.esic.mastering.repository.SessionSoutenanceRepository;
+import fr.esic.mastering.repository.SessionSoutenanceUserRepository;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
@@ -34,6 +56,15 @@ public class MasteringApplication implements CommandLineRunner {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+    private SessionSoutenanceRepository sessionSoutenanceRepository;
+
+	@Autowired
+	private SessionSoutenanceUserRepository sessionSoutenanceUserRepository;
+
+
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(MasteringApplication.class, args);
@@ -285,7 +316,87 @@ public class MasteringApplication implements CommandLineRunner {
 					sessionFormationRepository.save(session);
 				});
 
-		System.out.println("****************---------------°FIN° Ajout des sessions de formations-----------------****************");
+				
+
+		System.out.println("****************---------------°FIN° Ajout des users-----------------****************");
+
+		/*
+		 * --------------------------------
+		 * Ajout 
+		 * --------------------------------
+		 */
+
+		System.out.println("****************---------------Ajout des sessions de soutenances-----------------****************");
+
+		// Créez les sessions de soutenance avec les données nécessaires
+        // Exemple pour la Session IA - Paris
+        SessionSoutenance soutenance1 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session1, // Lien avec la session de formation "Session IA - Paris"
+            LocalDate.parse("15/06/2025", formatter), // Date de début de la soutenance
+            "Jean Dupont", // Responsable de la soutenance
+            "Prévue pour le 15 juin 2025, pour les projets IA",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
+
+        // Exemple pour la Session Cybersécurité - Lyon
+        SessionSoutenance soutenance2 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session2, // Lien avec la session de formation "Session Cybersécurité - Lyon"
+            LocalDate.parse("20/06/2025", formatter), // Date de début de la soutenance
+            "Marie Lemoine", // Responsable de la soutenance
+            "Prévue pour les 20-21 juin 2025, pour les projets de cybersécurité",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
+
+        // Exemple pour la Session Cloud - Marseille
+        SessionSoutenance soutenance3 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session3, // Lien avec la session de formation "Session Cloud - Marseille"
+            LocalDate.parse("25/06/2025", formatter), // Date de début de la soutenance
+            "Luc Martin", // Responsable de la soutenance
+            "Prévue pour les 25 juin 2025, pour les projets Cloud",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
+
+        // Exemple pour la Session Data Science - Toulouse
+        SessionSoutenance soutenance4 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session4, // Lien avec la session de formation "Session Data Science - Toulouse"
+            LocalDate.parse("01/07/2025", formatter), // Date de début de la soutenance
+            "Sophie Durand", // Responsable de la soutenance
+            "Prévue pour le 1er juillet 2025, pour les projets Data Science",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
+
+        // Exemple pour la Session Gestion de Projet - Nantes
+        SessionSoutenance soutenance5 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session5, // Lien avec la session de formation "Session Gestion de Projet - Nantes"
+            LocalDate.parse("10/07/2025", formatter), // Date de début de la soutenance
+            "Paul Lefevre", // Responsable de la soutenance
+            "Prévue pour le 10 juillet 2025, pour les projets de gestion de projet",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
+
+        // Vous pouvez enregistrer ces sessions dans votre base de données via votre repository
+         sessionSoutenanceRepository.save(soutenance1);
+         sessionSoutenanceRepository.save(soutenance2);
+         sessionSoutenanceRepository.save(soutenance3);
+         sessionSoutenanceRepository.save(soutenance4);
+         sessionSoutenanceRepository.save(soutenance5);
+
+		System.out.println("****************---------------°FIN° Ajout des session_soutenance -----------------****************");
 
 		/*
 		 * -------------------------------- Ajout des évaluations
@@ -361,7 +472,25 @@ public class MasteringApplication implements CommandLineRunner {
 				});
 
 		System.out.println("****************---------------°FIN° Ajout des évaluations-----------------****************");
-	}
+
+
+		
+		};
+
+		/*
+		 * --------------------------------
+		 * Fin d'ajout des sessions de formations
+		 * --------------------------------
+		 */
+		
+		/*
+		 * --------------------------------
+		 * Ajout 
+		 * --------------------------------
+		 */
+
+	
+
 
 	// @Bean
 	// public JavaMailSender javaMailSender() {
@@ -372,4 +501,6 @@ public class MasteringApplication implements CommandLineRunner {
 	//     mailSender.setPassword("azerty");
 	//     return mailSender;
 	// }
+
 }
+

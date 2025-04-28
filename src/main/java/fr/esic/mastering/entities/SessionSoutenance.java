@@ -5,8 +5,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
@@ -18,6 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 
 @Data
 @AllArgsConstructor
@@ -32,7 +36,9 @@ public class SessionSoutenance {
     private Long id;
 
     //  Lien avec la session de formation sélectionnée
+    //@JsonIgnore
     @ManyToOne(optional = false)
+    @JoinColumn(name = "session_formation_id", nullable = false)
     private SessionFormation sessionFormation;
 
     
@@ -47,7 +53,8 @@ public class SessionSoutenance {
     private String commentaireDateDebut;
 
     // Liste des utilisateurs (coordinateurs) liés à cette session
-    @OneToMany(mappedBy = "sessionSoutenance", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonIgnore 
+    @OneToMany(mappedBy = "sessionSoutenance", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<SessionSoutenanceUser> participants = new ArrayList<>();
 
     //  Historique de modifications (optionnel mais utile)
