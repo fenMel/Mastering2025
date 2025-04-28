@@ -23,7 +23,7 @@ public class FormationRest {
     private FormationService formationService;
    
     // 2. Obtenir toutes les formations
-    @GetMapping
+    @GetMapping("/all")
     public List<Formation> getAllFormations() {
         return formationRepository.findAll();
     }
