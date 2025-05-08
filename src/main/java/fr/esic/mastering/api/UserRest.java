@@ -120,7 +120,7 @@ public class UserRest {
 		response.put("totalItems", usersPage.getTotalElements());
 		response.put("totalPages", usersPage.getTotalPages());
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	//Get user by role
