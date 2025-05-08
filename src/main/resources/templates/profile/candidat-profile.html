@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mastering - Complete Your Candidate Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <style>
         * {
             margin: 0;
@@ -382,6 +383,146 @@
             flex: 1;
         }
 
+        /* File upload styles */
+        .file-upload {
+            position: relative;
+            margin-bottom: 1.5rem;
+            border: 2px dashed #e8eef7;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background-color: #f8fafd;
+            padding: 1.5rem;
+        }
+
+        .file-upload:hover {
+            border-color: #3A73B7;
+            background-color: rgba(58, 115, 183, 0.05);
+        }
+
+        .file-upload-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .file-upload-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            color: #3A73B7;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-info {
+            color: #aab7c4;
+            font-size: 0.85rem;
+        }
+
+        .file-upload.has-file {
+            border-style: solid;
+            border-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+
+        .file-upload.has-file .file-upload-icon {
+            color: #4CAF50;
+        }
+
+        .file-upload.has-file .file-name {
+            display: block;
+            margin-top: 0.5rem;
+            font-weight: 500;
+            color: #4CAF50;
+        }
+
+        .file-upload .file-name {
+            display: none;
+        }
+
+        .file-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ff5252;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 15;
+        }
+
+        .file-upload.has-file:hover .file-remove {
+            opacity: 1;
+        }
+
+        .documents-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .documents-info {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Toast overrides */
+        #toast-container > .toast {
+            background-image: none !important;
+            padding: 15px 15px 15px 50px;
+        }
+
+        #toast-container > .toast-error {
+            background-color: #ff5252;
+        }
+
+        #toast-container > .toast-success {
+            background-color: #4CAF50;
+        }
+
+        #toast-container > .toast:before {
+            position: fixed;
+            font-family: 'Font Awesome 5 Free';
+            font-size: 24px;
+            line-height: 18px;
+            float: left;
+            color: #FFF;
+            padding-right: 0.5em;
+            margin: auto 0.5em auto -1.5em;
+            font-weight: 900;
+        }
+
+        #toast-container > .toast-error:before {
+            content: "\f071";
+        }
+
+        #toast-container > .toast-success:before {
+            content: "\f00c";
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             body {
@@ -416,19 +557,23 @@
         body.dark-mode h2,
         body.dark-mode .form-logo,
         body.dark-mode .summary-item span,
-        body.dark-mode .success-message h3 {
+        body.dark-mode .success-message h3,
+        body.dark-mode .documents-header {
             color: #ecf0f1;
         }
 
         body.dark-mode .form-group label,
         body.dark-mode .summary-item strong,
-        body.dark-mode .success-message p {
+        body.dark-mode .success-message p,
+        body.dark-mode .documents-info,
+        body.dark-mode .file-upload-text {
             color: #bdc3c7;
         }
 
         body.dark-mode .form-group input,
         body.dark-mode .form-group select,
-        body.dark-mode .form-group textarea {
+        body.dark-mode .form-group textarea,
+        body.dark-mode .file-upload {
             background-color: #34495e;
             border-color: #2c3e50;
             color: #ecf0f1;
@@ -436,7 +581,8 @@
 
         body.dark-mode .form-group input::placeholder,
         body.dark-mode .form-group select::placeholder,
-        body.dark-mode .form-group textarea::placeholder {
+        body.dark-mode .form-group textarea::placeholder,
+        body.dark-mode .file-upload-info {
             color: #7f8c8d;
         }
 
@@ -461,15 +607,12 @@
             background-color: #34495e;
         }
 
-        body.dark-mode .avatar-preview {
-            background-color: #34495e;
-            border-color: #2c3e50;
+        body.dark-mode .file-upload:hover {
+            background-color: rgba(58, 115, 183, 0.1);
         }
 
-        body.dark-mode .upload-btn {
-            background: linear-gradient(to right, #34495e, #2c3e50);
-            color: #3A73B7;
-            border-color: #2c3e50;
+        body.dark-mode .file-upload.has-file {
+            background-color: rgba(76, 175, 80, 0.1);
         }
 
         body.dark-mode .theme-toggle {
@@ -497,9 +640,10 @@
         <div class="step" id="step-2">2</div>
         <div class="step" id="step-3">3</div>
         <div class="step" id="step-4">4</div>
+        <div class="step" id="step-5">5</div>
     </div>
 
-    <form th:action="@{/complete-profile}" method="post" id="profileForm">
+    <form th:action="@{/complete-profile}" method="post" id="profileForm" enctype="multipart/form-data">
         <input type="hidden" name="token" th:value="${token}">
         <input type="hidden" name="roleType" th:value="${roleType}">
 
@@ -590,7 +734,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="cv">Résumé Professionnel (CV)</label>
+                <label for="cv">Résumé Professionnel</label>
                 <textarea id="cv" name="cv" rows="4" placeholder="Décrivez brièvement votre expérience professionnelle et vos compétences"></textarea>
             </div>
             <div class="form-group">
@@ -603,8 +747,63 @@
             </div>
         </div>
 
-        <!-- Step 4: Final Information and Review -->
+        <!-- Step 4: Documents Upload -->
         <div class="form-step" id="form-step-4">
+            <h2>Documents</h2>
+            <div class="documents-info">
+                Tous les documents sont optionnels et peuvent être ajoutés ultérieurement.
+            </div>
+
+            <!-- CV Upload -->
+            <div class="file-upload" id="cv-upload">
+                <input type="file" class="file-upload-input" id="cvFile" name="cvFile" accept=".pdf,.doc,.docx">
+                <button type="button" class="file-remove" onclick="removeFile('cv-upload', 'cvFile')">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+                <div class="file-upload-content">
+                    <i class="fas fa-file-alt file-upload-icon"></i>
+                    <div class="file-upload-text">CV / Curriculum Vitae</div>
+                    <p class="file-upload-info">Formats acceptés: PDF, DOC, DOCX</p>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <!-- ID Card Upload -->
+            <div class="file-upload" id="id-upload">
+                <input type="file" class="file-upload-input" id="idFile" name="idFile" accept=".pdf,.jpg,.jpeg,.png">
+                <button type="button" class="file-remove" onclick="removeFile('id-upload', 'idFile')">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+                <div class="file-upload-content">
+                    <i class="fas fa-id-card file-upload-icon"></i>
+                    <div class="file-upload-text">Pièce d'Identité</div>
+                    <p class="file-upload-info">Carte d'identité ou Passeport (PDF, JPG, PNG)</p>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <!-- Certificate Upload -->
+            <div class="file-upload" id="certificate-upload">
+                <input type="file" class="file-upload-input" id="certificateFile" name="certificateFile" accept=".pdf,.jpg,.jpeg,.png">
+                <button type="button" class="file-remove" onclick="removeFile('certificate-upload', 'certificateFile')">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+                <div class="file-upload-content">
+                    <i class="fas fa-graduation-cap file-upload-icon"></i>
+                    <div class="file-upload-text">Diplôme ou Certificat</div>
+                    <p class="file-upload-info">Formats acceptés: PDF, JPG, PNG</p>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn btn-prev" onclick="prevStep()">Précédent</button>
+                <button type="button" class="btn btn-next" onclick="nextStep()">Suivant</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Final Information and Review -->
+        <div class="form-step" id="form-step-5">
             <h2>Informations Complémentaires</h2>
             <div class="form-group">
                 <label for="motivationLetter">Lettre de Motivation</label>
@@ -639,9 +838,31 @@
     </div>
 </div>
 
+<!-- JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     let currentStep = 1;
-    const totalSteps = 4;
+    const totalSteps = 5;
+
+    // Initialize toastr notification settings
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
 
     function updateProgressBar() {
         const progressBar = document.getElementById('progress-bar');
@@ -703,12 +924,22 @@
             const confirmPassword = document.getElementById('confirm-password').value;
 
             if (!email) {
-                alert('Veuillez entrer votre email');
+                toastr.error('Veuillez entrer votre email');
+                return false;
+            }
+
+            if (!isValidEmail(email)) {
+                toastr.error('Veuillez entrer une adresse email valide');
                 return false;
             }
 
             if (password !== confirmPassword) {
-                alert('Les mots de passe ne correspondent pas');
+                toastr.error('Les mots de passe ne correspondent pas');
+                return false;
+            }
+
+            if (password.length < 8) {
+                toastr.error('Le mot de passe doit contenir au moins 8 caractères');
                 return false;
             }
         } else if (currentStep === 2) {
@@ -716,12 +947,52 @@
             const nom = document.getElementById('nom').value;
 
             if (!prenom || !nom) {
-                alert('Veuillez remplir les champs obligatoires (Prénom et Nom)');
+                toastr.error('Veuillez remplir les champs obligatoires (Prénom et Nom)');
                 return false;
             }
         }
 
         return true;
+    }
+
+    function isValidEmail(email) {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    // File upload handling
+    document.querySelectorAll('.file-upload-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const fileUploadDiv = this.closest('.file-upload');
+            const fileNameSpan = fileUploadDiv.querySelector('.file-name');
+
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                fileNameSpan.textContent = fileName;
+                fileUploadDiv.classList.add('has-file');
+
+                // Show success notification
+                toastr.success(`Fichier "${fileName}" sélectionné`);
+            }
+        });
+    });
+
+    function removeFile(uploadId, inputId) {
+        const fileUploadDiv = document.getElementById(uploadId);
+        const fileInput = document.getElementById(inputId);
+        const fileNameSpan = fileUploadDiv.querySelector('.file-name');
+
+        // Get the filename before clearing
+        const fileName = fileInput.files && fileInput.files[0] ? fileInput.files[0].name : "";
+
+        // Reset the file input
+        fileInput.value = '';
+        fileNameSpan.textContent = '';
+        fileUploadDiv.classList.remove('has-file');
+
+        if (fileName) {
+            toastr.info(`Fichier "${fileName}" supprimé`);
+        }
     }
 
     // Form submission
@@ -731,23 +1002,46 @@
             return false;
         }
 
+        // Additional form validation can be added here
         // Form is valid, you can submit it
         return true;
     });
 
     // Dark mode toggle
-    document.getElementById('theme-toggle').addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
+    // This function loads the theme from localStorage on page load
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('mastering-theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            const icon = document.querySelector('.theme-toggle i');
+            if (icon) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+    }
+
+    // This function toggles the theme and saves it to localStorage
+    function toggleTheme() {
+        const isDarkMode = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('mastering-theme', isDarkMode ? 'dark' : 'light');
 
         const icon = this.querySelector('i');
-        if (icon.classList.contains('fa-moon')) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
+        if (icon) {
+            if (icon.classList.contains('fa-moon')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
         }
-    });
+    }
+
+    // Initialize theme functions
+    document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+    // Load theme on page load
+    loadTheme();
 
     // Initialize the form
     updateProgressBar();

@@ -1,33 +1,23 @@
 package fr.esic.mastering;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
-import fr.esic.mastering.entities.Formation;
+
 import fr.esic.mastering.entities.Role;
 import fr.esic.mastering.entities.RoleType;
-import fr.esic.mastering.entities.SessionFormation;
-import fr.esic.mastering.entities.SessionSoutenance;
+
 import fr.esic.mastering.entities.User;
-import fr.esic.mastering.repository.FormationRepository;
 import fr.esic.mastering.repository.RoleRepository;
 import fr.esic.mastering.repository.UserRepository;
-import fr.esic.mastering.repository.SessionFormationRepository;
-import fr.esic.mastering.repository.SessionSoutenanceRepository;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
