@@ -3,12 +3,10 @@ package fr.esic.mastering.repository;
 import java.util.List;
 import java.util.Optional;
 
-import fr.esic.mastering.entities.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import fr.esic.mastering.entities.RoleType;
 import fr.esic.mastering.entities.User;
@@ -38,5 +36,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
    Page<User> findByRole_RoleUtilisateur(RoleType roleType, Pageable pageable);
 
 
-    List<User> findByRoleRoleUtilisateur(RoleType roleType);
+    List<User> findByRoleRoleUtilisateur(RoleType roleUtilisateur);
 }

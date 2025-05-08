@@ -8,6 +8,7 @@ import fr.esic.mastering.dto.UserCreationDTO;
 import fr.esic.mastering.dto.UserDTO;
 import fr.esic.mastering.entities.Role;
 import fr.esic.mastering.entities.RoleType;
+import fr.esic.mastering.exceptions.EmailAlreadyExistsException;
 import fr.esic.mastering.mapper.UserMapper;
 import fr.esic.mastering.repository.RoleRepository;
 import fr.esic.mastering.services.EmailService;
@@ -217,9 +218,15 @@ public class UserRest {
 
 			// Find role by the enum type
 			Role role = roleRepository.findByRoleUtilisateur(roleType)
-					.orElseThrow(() -> new IllegalArgumentException("Role not found: " + userDTO.getRoleName()));
+					.orElseThrow(() -> new IllegalArgumentException("Le role fournis n'existe pas"));
 
-			// Rest of your code remains the same
+
+
+			// Check if the email already exists
+			if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+				throw new EmailAlreadyExistsException("Un utilisateur avec ce mail existe déjà");
+			}
+
 			User user = new User();
 			user.setNom(userDTO.getNom());
 			user.setPrenom(userDTO.getPrenom());
@@ -247,8 +254,10 @@ public class UserRest {
 			return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
+		} catch (EmailAlreadyExistsException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	private void sendProfileCompletionEmail(User user, String token) {
 		try {
