@@ -1,6 +1,7 @@
 package fr.esic.mastering.api;
 
 import com.itextpdf.text.DocumentException;
+import fr.esic.mastering.services.EmailTemplateService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +47,16 @@ public class ConvocationRest {
             byte[] pdfContent = pdfService.generateConvocationPdf(user, convocationDTO);
 
             String subject = "Convocation - " + convocationDTO.getTitle();
-            String messageText = "<p>Bonjour " + user.getNom() + " " + user.getPrenom() + ",</p>" +
-                                  "<p>Veuillez trouver ci-joint votre convocation pour " + convocationDTO.getTitle() + ".</p>" +
-                                  "<p>Cordialement,<br>Votre Organisation</p>";
+
+            // Get email content from template service
+            String messageText = EmailTemplateService.getConvocationEmailTemplate(
+                    user.getPrenom(),
+                    user.getNom(),
+                    convocationDTO.getTitle()
+            );
 
             String filename = "convocation_" + user.getNom().toLowerCase() + "_" +
-                              convocationDTO.getTitle().replaceAll("\\s+", "_").toLowerCase() + ".pdf";
+                    convocationDTO.getTitle().replaceAll("\\s+", "_").toLowerCase() + ".pdf";
 
             emailService.sendConvocationEmail(user, subject, messageText, pdfContent, filename);
 

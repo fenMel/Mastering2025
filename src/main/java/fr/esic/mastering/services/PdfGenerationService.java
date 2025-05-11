@@ -201,12 +201,6 @@ public class PdfGenerationService {
     }
 
     private void addJuryContent(Document document, ConvocationDTO convocation) throws DocumentException {
-        // Add role heading
-        Font roleFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, PRIMARY_COLOR);
-        Paragraph roleHeading = new Paragraph("Votre rôle : Membre du Jury", roleFont);
-        roleHeading.setSpacingBefore(10);
-        roleHeading.setSpacingAfter(10);
-        document.add(roleHeading);
 
         // Add content
         Font contentFont = new Font(Font.FontFamily.HELVETICA, 11);

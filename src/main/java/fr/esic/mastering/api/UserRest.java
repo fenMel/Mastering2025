@@ -12,6 +12,7 @@ import fr.esic.mastering.exceptions.EmailAlreadyExistsException;
 import fr.esic.mastering.mapper.UserMapper;
 import fr.esic.mastering.repository.RoleRepository;
 import fr.esic.mastering.services.EmailService;
+import fr.esic.mastering.services.EmailTemplateService;
 import fr.esic.mastering.services.UserAttributeService;
 import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,18 +262,19 @@ public class UserRest {
 
 	private void sendProfileCompletionEmail(User user, String token) {
 		try {
-			String subject = "Veuillez completer votre profile";
+			String subject = "Veuillez compléter votre profil";
 
 			// Create a link to our own server
 			String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 			String profileCompletionUrl = baseUrl + "/complete-profile?token=" + token;
 
-			String content =
-					"<p>Hello " + user.getPrenom() + " " + user.getNom() + ",</p>" +
-							"<p>Vous avez été inscrit :</p>" +
-							"<p><a href='" + profileCompletionUrl + "'>completer votre profile</a></p>" +
-							"<p>Expire dans  24 heures.</p>" ;
-
+			// Get email content from template service
+			String content = EmailTemplateService.getProfileCompletionEmailTemplate(
+					baseUrl,
+					user.getPrenom(),
+					user.getNom(),
+					profileCompletionUrl
+			);
 
 			emailService.sendHtmlEmail(user.getEmail(), subject, content);
 		} catch (Exception e) {
