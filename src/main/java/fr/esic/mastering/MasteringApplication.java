@@ -117,7 +117,7 @@ public class MasteringApplication implements CommandLineRunner {
 				"laura.schmidt@gmail.com", "Berlin", passwordEncoder.encode("LauraJury123"), roleJury);
 
 		// Superviseurs (2)
-		User sup1 = new User(null, "Ahmed", "Karim", sdf.parse("14/08/1979"), "0601998765", "karim.ahmed@gmail.com",
+            User sup1 = new User(null, "Ahmed", "Karim", sdf.parse("14/08/1979"), "0601998765", "karim.ahmed@gmail.com",
 				"Tunis", passwordEncoder.encode("KarimSup123"), roleSupervisor);
 		User sup2 = new User(null, "Becker", "Hans", sdf.parse("07/05/1983"), "0601223344", "hans.becker@gmail.com",
 				"Frankfurt", passwordEncoder.encode("HansSup123"), roleSupervisor);
