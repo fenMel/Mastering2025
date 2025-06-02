@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,7 +23,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-@Data @AllArgsConstructor @NoArgsConstructor @Entity @Table(name = "sessions_formation")
+@Data 
+@AllArgsConstructor 
+@NoArgsConstructor 
+@Entity 
+@Table(name = "sessions_formation")
 
 public class SessionFormation {
 	
@@ -31,6 +36,8 @@ public class SessionFormation {
 	
 		
 		 private Long id;
+
+		// Removed duplicate 'formation' field to avoid conflict
 		 
 	
 	 @NotBlank(message = "Le titre est obligatoire")
@@ -57,12 +64,14 @@ public class SessionFormation {
 	  
 
     // ✅ Many-to-Many avec Etudiant
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "session_candidats",
         joinColumns = @JoinColumn(name = "session"),
         inverseJoinColumns = @JoinColumn(name = "candidat")
     )
+
+	
     private List<User> users; // Liste des candidats associés à la session
 	    
 	  

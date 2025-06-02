@@ -21,6 +21,9 @@ public interface UserRepository extends CrudRepository<User, Long>{
 	public Optional<User> getByLoginAndPassword(String email, String password);
 
    public Optional<User> findByEmail(String email);
+
+    // Find by token method
+    Optional<User> findByResetToken(String resetToken);
    
    @Query("select u from User u where u.email = ?1 ")
    public Optional<User> getByEmail(String email);
