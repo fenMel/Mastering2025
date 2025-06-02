@@ -25,15 +25,9 @@ import fr.esic.mastering.repository.FormationRepository;
 import fr.esic.mastering.repository.RoleRepository;
 import fr.esic.mastering.repository.SessionFormationRepository;
 import fr.esic.mastering.repository.UserRepository;
-import fr.esic.mastering.repository.SessionFormationRepository;
 import fr.esic.mastering.repository.SessionSoutenanceRepository;
 import fr.esic.mastering.repository.SessionSoutenanceUserRepository;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -58,13 +52,10 @@ public class MasteringApplication implements CommandLineRunner {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-    private SessionSoutenanceRepository sessionSoutenanceRepository;
+	private SessionSoutenanceRepository sessionSoutenanceRepository;
 
 	@Autowired
 	private SessionSoutenanceUserRepository sessionSoutenanceUserRepository;
-
-
-	
 
 	public static void main(String[] args) {
 		SpringApplication.run(MasteringApplication.class, args);
@@ -74,6 +65,7 @@ public class MasteringApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		LocalDate today = LocalDate.now(); // Get the current date once
 
 		/*
 		 * -------------------------------- Ajout des Roles
@@ -258,15 +250,17 @@ public class MasteringApplication implements CommandLineRunner {
 		 * -------------------------------- Ajout des sessions de formations
 		 * --------------------------------
 		 */
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		// We're no longer using a fixed formatter here, but keep it if used for parsing other fixed dates
+		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		System.out.println("****************---------------Ajout des sessions de formations-----------------****************");
 
+		// Dynamically setting future dates using LocalDate.now()
 		SessionFormation session1 = new SessionFormation(
 				null,
 				"Session IA - Paris",
 				"Session avancée sur l'intelligence artificielle.",
-				LocalDate.parse("01/06/2025", formatter),
-				LocalDate.parse("01/12/2025", formatter),
+				today.plusDays(7), // Starts 7 days from today
+				today.plusMonths(6).plusDays(7), // Ends 6 months and 7 days from today
 				iaFormation,
 				new ArrayList<>()
 		);
@@ -275,8 +269,8 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				"Session Cybersécurité - Lyon",
 				"Session sécurité offensive et défensive.",
-				LocalDate.parse("15/06/2025", formatter),
-				LocalDate.parse("15/12/2025", formatter),
+				today.plusWeeks(4), // Starts 4 weeks from today
+				today.plusMonths(7).plusWeeks(4), // Ends 7 months and 4 weeks from today
 				cyberFormation,
 				new ArrayList<>()
 		);
@@ -285,8 +279,8 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				"Session Cloud - Marseille",
 				"Session sur les solutions cloud modernes.",
-				LocalDate.parse("01/07/2025", formatter),
-				LocalDate.parse("01/01/2026", formatter),
+				today.plusMonths(2).plusDays(10), // Starts 2 months and 10 days from today
+				today.plusMonths(8).plusDays(10), // Ends 8 months and 10 days from today
 				cloudFormation,
 				new ArrayList<>()
 		);
@@ -295,8 +289,8 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				"Session Data Science - Toulouse",
 				"Session pour apprendre à analyser des données.",
-				LocalDate.parse("01/09/2025", formatter),
-				LocalDate.parse("01/03/2026", formatter),
+				today.plusMonths(3).plusDays(5), // Starts 3 months and 5 days from today
+				today.plusMonths(9).plusDays(5), // Ends 9 months and 5 days from today
 				dataFormation,
 				new ArrayList<>()
 		);
@@ -305,8 +299,8 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				"Session Gestion de Projet - Nantes",
 				"Session sur les méthodes agiles et traditionnelles.",
-				LocalDate.parse("01/10/2025", formatter),
-				LocalDate.parse("01/04/2026", formatter),
+				today.plusMonths(4).plusDays(1), // Starts 4 months and 1 day from today
+				today.plusMonths(10).plusDays(1), // Ends 10 months and 1 day from today
 				gestionFormation,
 				new ArrayList<>()
 		);
@@ -316,85 +310,80 @@ public class MasteringApplication implements CommandLineRunner {
 					sessionFormationRepository.save(session);
 				});
 
-				
-
-		System.out.println("****************---------------°FIN° Ajout des users-----------------****************");
+		System.out.println("****************---------------°FIN° Ajout des sessions de formations-----------------****************");
 
 		/*
-		 * --------------------------------
-		 * Ajout 
+		 * -------------------------------- Ajout des sessions de soutenances
 		 * --------------------------------
 		 */
-
 		System.out.println("****************---------------Ajout des sessions de soutenances-----------------****************");
 
-		// Créez les sessions de soutenance avec les données nécessaires
-        // Exemple pour la Session IA - Paris
-        SessionSoutenance soutenance1 = new SessionSoutenance(
-            null, // ID sera généré automatiquement
-            session1, // Lien avec la session de formation "Session IA - Paris"
-            LocalDate.parse("15/06/2025", formatter), // Date de début de la soutenance
-            "Jean Dupont", // Responsable de la soutenance
-            "Prévue pour le 15 juin 2025, pour les projets IA",
-            new ArrayList<>(), // Liste des participants
-            LocalDateTime.now(), // Date de création
-            LocalDateTime.now()  // Dernière modification
-        );
+		// Re-using the formatter for soutenance dates, assuming they are fixed but still need to be valid.
+		// You might want to adjust these to be dynamically linked to the sessionFormation dates for consistency.
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Re-declare or move up if needed
 
-        // Exemple pour la Session Cybersécurité - Lyon
-        SessionSoutenance soutenance2 = new SessionSoutenance(
-            null, // ID sera généré automatiquement
-            session2, // Lien avec la session de formation "Session Cybersécurité - Lyon"
-            LocalDate.parse("20/06/2025", formatter), // Date de début de la soutenance
-            "Marie Lemoine", // Responsable de la soutenance
-            "Prévue pour les 20-21 juin 2025, pour les projets de cybersécurité",
-            new ArrayList<>(), // Liste des participants
-            LocalDateTime.now(), // Date de création
-            LocalDateTime.now()  // Dernière modification
-        );
+		// Ensure soutenance dates are after their respective session formation dates
+		// For example, soutenance1 should be after session1.dateDebut
+		SessionSoutenance soutenance1 = new SessionSoutenance(
+				null, // ID will be generated automatically
+				session1, // Link with the "Session IA - Paris" training session
+				session1.getDateFin().plusDays(5), // 5 days after the session ends (ensures future)
+				"Jean Dupont", // Soutenance manager
+				"Prévue pour les projets IA",
+				new ArrayList<>(), // List of participants
+				LocalDateTime.now(), // Creation date
+				LocalDateTime.now()  // Last modification
+		);
 
-        // Exemple pour la Session Cloud - Marseille
-        SessionSoutenance soutenance3 = new SessionSoutenance(
-            null, // ID sera généré automatiquement
-            session3, // Lien avec la session de formation "Session Cloud - Marseille"
-            LocalDate.parse("25/06/2025", formatter), // Date de début de la soutenance
-            "Luc Martin", // Responsable de la soutenance
-            "Prévue pour les 25 juin 2025, pour les projets Cloud",
-            new ArrayList<>(), // Liste des participants
-            LocalDateTime.now(), // Date de création
-            LocalDateTime.now()  // Dernière modification
-        );
+		SessionSoutenance soutenance2 = new SessionSoutenance(
+				null, // ID will be generated automatically
+				session2, // Link with the "Session Cybersécurité - Lyon" training session
+				session2.getDateFin().plusDays(5), // 5 days after the session ends
+				"Marie Lemoine", // Soutenance manager
+				"Prévue pour les projets de cybersécurité",
+				new ArrayList<>(), // List of participants
+				LocalDateTime.now(), // Creation date
+				LocalDateTime.now()  // Last modification
+		);
 
-        // Exemple pour la Session Data Science - Toulouse
-        SessionSoutenance soutenance4 = new SessionSoutenance(
-            null, // ID sera généré automatiquement
-            session4, // Lien avec la session de formation "Session Data Science - Toulouse"
-            LocalDate.parse("01/07/2025", formatter), // Date de début de la soutenance
-            "Sophie Durand", // Responsable de la soutenance
-            "Prévue pour le 1er juillet 2025, pour les projets Data Science",
-            new ArrayList<>(), // Liste des participants
-            LocalDateTime.now(), // Date de création
-            LocalDateTime.now()  // Dernière modification
-        );
+		SessionSoutenance soutenance3 = new SessionSoutenance(
+				null, // ID will be generated automatically
+				session3, // Link with the "Session Cloud - Marseille" training session
+				session3.getDateFin().plusDays(5), // 5 days after the session ends
+				"Luc Martin", // Soutenance manager
+				"Prévue pour les projets Cloud",
+				new ArrayList<>(), // List of participants
+				LocalDateTime.now(), // Creation date
+				LocalDateTime.now()  // Last modification
+		);
 
-        // Exemple pour la Session Gestion de Projet - Nantes
-        SessionSoutenance soutenance5 = new SessionSoutenance(
-            null, // ID sera généré automatiquement
-            session5, // Lien avec la session de formation "Session Gestion de Projet - Nantes"
-            LocalDate.parse("10/07/2025", formatter), // Date de début de la soutenance
-            "Paul Lefevre", // Responsable de la soutenance
-            "Prévue pour le 10 juillet 2025, pour les projets de gestion de projet",
-            new ArrayList<>(), // Liste des participants
-            LocalDateTime.now(), // Date de création
-            LocalDateTime.now()  // Dernière modification
-        );
+		SessionSoutenance soutenance4 = new SessionSoutenance(
+				null, // ID will be generated automatically
+				session4, // Link with the "Session Data Science - Toulouse" training session
+				session4.getDateFin().plusDays(5), // 5 days after the session ends
+				"Sophie Durand", // Soutenance manager
+				"Prévue pour les projets Data Science",
+				new ArrayList<>(), // List of participants
+				LocalDateTime.now(), // Creation date
+				LocalDateTime.now()  // Last modification
+		);
 
-        // Vous pouvez enregistrer ces sessions dans votre base de données via votre repository
-         sessionSoutenanceRepository.save(soutenance1);
-         sessionSoutenanceRepository.save(soutenance2);
-         sessionSoutenanceRepository.save(soutenance3);
-         sessionSoutenanceRepository.save(soutenance4);
-         sessionSoutenanceRepository.save(soutenance5);
+		SessionSoutenance soutenance5 = new SessionSoutenance(
+				null, // ID will be generated automatically
+				session5, // Link with the "Session Gestion de Projet - Nantes" training session
+				session5.getDateFin().plusDays(5), // 5 days after the session ends
+				"Paul Lefevre", // Soutenance manager
+				"Prévue pour les projets de gestion de projet",
+				new ArrayList<>(), // List of participants
+				LocalDateTime.now(), // Creation date
+				LocalDateTime.now()  // Last modification
+		);
+
+		sessionSoutenanceRepository.save(soutenance1);
+		sessionSoutenanceRepository.save(soutenance2);
+		sessionSoutenanceRepository.save(soutenance3);
+		sessionSoutenanceRepository.save(soutenance4);
+		sessionSoutenanceRepository.save(soutenance5);
 
 		System.out.println("****************---------------°FIN° Ajout des session_soutenance -----------------****************");
 
@@ -404,7 +393,7 @@ public class MasteringApplication implements CommandLineRunner {
 		 */
 		System.out.println("****************---------------Ajout des évaluations-----------------****************");
 
-		// Récupération des utilisateurs pour créer les évaluations
+		// Retrieve users for evaluation creation
 		jury1 = userRepository.findByEmail("elise.benoit@gmail.com").orElse(null);
 		jury2 = userRepository.findByEmail("mario.rossi@gmail.com").orElse(null);
 		jury3 = userRepository.findByEmail("ines.lopez@gmail.com").orElse(null);
@@ -415,14 +404,14 @@ public class MasteringApplication implements CommandLineRunner {
 		cand4 = userRepository.findByEmail("eva.leblanc@gmail.com").orElse(null);
 		cand5 = userRepository.findByEmail("emily.smith@gmail.com").orElse(null);
 
-		// Création des évaluations
+		// Create evaluations
 		Evaluation eval1 = new Evaluation(
 				null,
 				jury1,
 				cand1,
 				"Excellente présentation sur l'intelligence artificielle. Concepts bien maîtrisés.",
 				17.5, 16.0, 18.0, 17.0, 16.5,
-				0.0 // La moyenne sera calculée automatiquement
+				0.0 // Mean will be calculated automatically
 		);
 		eval1.calculerMoyenne();
 
@@ -472,25 +461,7 @@ public class MasteringApplication implements CommandLineRunner {
 				});
 
 		System.out.println("****************---------------°FIN° Ajout des évaluations-----------------****************");
-
-
-		
-		};
-
-		/*
-		 * --------------------------------
-		 * Fin d'ajout des sessions de formations
-		 * --------------------------------
-		 */
-		
-		/*
-		 * --------------------------------
-		 * Ajout 
-		 * --------------------------------
-		 */
-
-	
-
+	}
 
 	// @Bean
 	// public JavaMailSender javaMailSender() {
@@ -501,6 +472,4 @@ public class MasteringApplication implements CommandLineRunner {
 	//     mailSender.setPassword("azerty");
 	//     return mailSender;
 	// }
-
 }
-
