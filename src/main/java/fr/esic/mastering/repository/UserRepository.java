@@ -3,15 +3,17 @@ package fr.esic.mastering.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import fr.esic.mastering.entities.RoleType;
 import fr.esic.mastering.entities.User;
 
 
 
-public interface UserRepository extends CrudRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Long> {
 
 	
 	
@@ -28,10 +30,11 @@ public interface UserRepository extends CrudRepository<User, Long>{
    @Query("select u from User u where u.email = ?1 ")
    public Optional<User> getByEmail(String email);
    
-  /* public Optional<User> findById(Long id);
-   @Query("select u.id, u.nom, u.prenom, u.email, u.role, u.dateNaissance, u.lieuxDeNaissance, u.tel from User u where u.id = ?1")
-   public Optional<Object[]> getUserWithoutPassword(Long id);*/
+
    
    // Recherche des utilisateurs par type de rôle
-   List<User> findByRoleRoleUtilisateur(RoleType roleUtilisateur);   
+   Page<User> findByRole_RoleUtilisateur(RoleType roleType, Pageable pageable);
+
+
+    List<User> findByRoleRoleUtilisateur(RoleType roleUtilisateur);
 }

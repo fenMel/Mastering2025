@@ -15,9 +15,10 @@ public class UserProfileForm {
     private String availability;   // For JURY
 
     private String cv;             // For CANDIDAT
-    private String motivationLetter; // For CANDIDAT
-
+    private String specialité; // For CANDIDAT
+    private String skills;
     private String department;     // For CORDINATEUR
+    private String education;
 
     // Getters and setters
     public String getNom() {
@@ -84,6 +85,8 @@ public class UserProfileForm {
         this.availability = availability;
     }
 
+
+    //CANDIDAT
     public String getCv() {
         return cv;
     }
@@ -93,11 +96,29 @@ public class UserProfileForm {
     }
 
     public String getMotivationLetter() {
-        return motivationLetter;
+        return specialité;
     }
 
     public void setMotivationLetter(String motivationLetter) {
-        this.motivationLetter = motivationLetter;
+        this.specialité = motivationLetter;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+
+
+    public void setEducation(String education) {
+        this.education = education;
     }
 
     public String getDepartment() {

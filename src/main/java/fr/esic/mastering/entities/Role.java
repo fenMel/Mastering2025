@@ -23,5 +23,6 @@ public class Role {
 	 @Enumerated(EnumType.STRING) // Stocke l'enum sous forme de chaîne dans la base de données
 	 @Column(unique = true, nullable = false)
 	private RoleType  roleUtilisateur;
-	
+
+
 }

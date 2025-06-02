@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
 import java.util.stream.Stream;
 
 import fr.esic.mastering.entities.*;
@@ -13,22 +14,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
-import fr.esic.mastering.entities.Formation;
+
 import fr.esic.mastering.entities.Role;
 import fr.esic.mastering.entities.RoleType;
-import fr.esic.mastering.entities.SessionFormation;
-import fr.esic.mastering.entities.SessionSoutenance;
+
 import fr.esic.mastering.entities.User;
-import fr.esic.mastering.repository.FormationRepository;
 import fr.esic.mastering.repository.RoleRepository;
+
+import fr.esic.mastering.repository.UserRepository;
+
+
+
 import fr.esic.mastering.repository.SessionFormationRepository;
 import fr.esic.mastering.repository.UserRepository;
 import fr.esic.mastering.repository.SessionSoutenanceRepository;
 import fr.esic.mastering.repository.SessionSoutenanceUserRepository;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
@@ -135,7 +139,7 @@ public class MasteringApplication implements CommandLineRunner {
 				"laura.schmidt@gmail.com", "Berlin", passwordEncoder.encode("LauraJury123"), roleJury);
 
 		// Superviseurs (2)
-		User sup1 = new User(null, "Ahmed", "Karim", sdf.parse("14/08/1979"), "0601998765", "karim.ahmed@gmail.com",
+            User sup1 = new User(null, "Ahmed", "Karim", sdf.parse("14/08/1979"), "0601998765", "karim.ahmed@gmail.com",
 				"Tunis", passwordEncoder.encode("KarimSup123"), roleSupervisor);
 		User sup2 = new User(null, "Becker", "Hans", sdf.parse("07/05/1983"), "0601223344", "hans.becker@gmail.com",
 				"Frankfurt", passwordEncoder.encode("HansSup123"), roleSupervisor);

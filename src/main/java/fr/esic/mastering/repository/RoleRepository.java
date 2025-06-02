@@ -8,7 +8,10 @@ import fr.esic.mastering.entities.Role;
 import fr.esic.mastering.entities.RoleType;
 
 public interface RoleRepository extends JpaRepository<Role, Long>{
-  
-	// Optional<Role> findByName(String name);
+
+         Optional<Role> findByRoleUtilisateur(String roleUtilisateur);
+
+    // Optional<Role> findByName(String name);
     Optional<Role> findByRoleUtilisateur(RoleType roleUtilisateur);
+
 }

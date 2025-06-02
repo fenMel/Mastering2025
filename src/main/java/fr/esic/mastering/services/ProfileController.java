@@ -38,7 +38,7 @@ public class ProfileController {
 
         if (userOpt.isEmpty() || userOpt.get().getResetTokenExpiry().isBefore(LocalDateTime.now())) {
             model.addAttribute("error", "Invalid or expired token");
-            return "error";
+            return "Invalide Token Error";
         }
 
         User user = userOpt.get();
@@ -59,8 +59,6 @@ public class ProfileController {
 
 
         };
-
-
     }
 
     // Process the form submission
@@ -76,7 +74,7 @@ public class ProfileController {
 
         if (userOpt.isEmpty() || userOpt.get().getResetTokenExpiry().isBefore(LocalDateTime.now())) {
             model.addAttribute("error", "Invalid or expired token");
-            return "error";
+            return "error on token invalid";
         }
 
         User user = userOpt.get();
@@ -134,6 +132,7 @@ public class ProfileController {
                 // Save fields that exist in your UserProfileForm
                 userAttributeService.setAttribute(userId, "cv", userForm.getCv());
                 userAttributeService.setAttribute(userId, "motivationLetter", userForm.getMotivationLetter());
+                userAttributeService.setAttribute(userId, "skills", userForm.getSkills());
                 break;
 
             case CORDINATEUR:
