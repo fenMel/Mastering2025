@@ -353,7 +353,7 @@
 
     <!-- Role specific message section -->
     <div class="role-specific-message" th:if="${roleType.name() == 'CANDIDAT'}">
-        <h4><i class="fas fa-user-graduate"></i> Bienvenue, Candidat!</h4>
+        <h4><i class="fas fa-user-graduate"></i> Bienvenue, !</h4>
         <p>En tant que candidat, vous pouvez maintenant:</p>
         <ul>
             <li>Postuler aux sessions d'évaluation disponibles</li>
@@ -363,7 +363,7 @@
     </div>
 
     <div class="role-specific-message" th:if="${roleType.name() == 'JURY'}">
-        <h4><i class="fas fa-user-tie"></i> Bienvenue, Membre du Jury!</h4>
+        <h4><i class="fas fa-user-tie"></i> Bienvenue !</h4>
         <p>En tant que membre du jury, vous pouvez maintenant:</p>
         <ul>
             <li>Accéder aux sessions d'évaluation planifiées</li>
@@ -373,7 +373,7 @@
     </div>
 
     <div class="role-specific-message" th:if="${roleType.name() == 'CORDINATEUR'}">
-        <h4><i class="fas fa-user-cog"></i> Bienvenue, Coordinateur!</h4>
+        <h4><i class="fas fa-user-cog"></i> Bienvenue !</h4>
         <p>En tant que coordinateur, vous pouvez maintenant:</p>
         <ul>
             <li>Gérer les sessions d'évaluation</li>
@@ -400,18 +400,40 @@
     };
 
     // Dark mode toggle
-    document.getElementById('theme-toggle').addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
+    // This function loads the theme from localStorage on page load
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('mastering-theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            const icon = document.querySelector('.theme-toggle i');
+            if (icon) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+    }
+
+    // This function toggles the theme and saves it to localStorage
+    function toggleTheme() {
+        const isDarkMode = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('mastering-theme', isDarkMode ? 'dark' : 'light');
 
         const icon = this.querySelector('i');
-        if (icon.classList.contains('fa-moon')) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
+        if (icon) {
+            if (icon.classList.contains('fa-moon')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
         }
-    });
+    }
+
+    // Initialize theme functions
+    document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+    // Load theme on page load
+    loadTheme();
 </script>
 </body>
 </html>

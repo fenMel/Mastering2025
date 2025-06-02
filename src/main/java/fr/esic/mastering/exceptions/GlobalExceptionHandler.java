@@ -1,5 +1,6 @@
 package fr.esic.mastering.exceptions;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,10 +24,12 @@ public class GlobalExceptionHandler {
 
     // Gestion des autres exceptions (comme IllegalArgumentException)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity.badRequest().body(
-            new ErrorResponse(ex.getMessage())
-        );
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                "error", ex.getMessage(),
+                "status", 400,
+                "timestamp", LocalDateTime.now()
+        ));
     }
     
 
@@ -58,5 +61,17 @@ public class GlobalExceptionHandler {
         });
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleEmailExists(EmailAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "error", ex.getMessage(),
+                "status", 409,
+                "timestamp", LocalDateTime.now()
+        ));
+    }
+
+
+
 
 }
