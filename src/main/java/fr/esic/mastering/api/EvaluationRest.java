@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -116,17 +117,7 @@ public class EvaluationRest {
      * @param newEvaluation Les nouvelles données de l'évaluation
      * @return Une réponse avec un message de succès ou d'échec
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateEvaluation(@PathVariable Long id, @RequestBody Evaluation newEvaluation) {
-        try {
-            Evaluation updatedEvaluation = evaluationService.updateEvaluation(id, newEvaluation);
-            return ResponseEntity.ok("Évaluation mise à jour avec succès !");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erreur lors de la mise à jour de l'évaluation.");
-        }
-    }
+
 
     /**
      * Endpoint pour supprimer une évaluation.
@@ -143,4 +134,34 @@ public class EvaluationRest {
             return ResponseEntity.status(500).body("Erreur lors de la suppression de l'évaluation.");
         }
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEvaluationById(@PathVariable Long id) {
+        try {
+            Optional<Evaluation> evaluation = evaluationService.getById(id);
+            if (evaluation.isPresent()) {
+                return ResponseEntity.ok(evaluation.get());
+            } else {
+                return ResponseEntity.status(404).body("Évaluation non trouvée");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erreur lors de la récupération de l'évaluation.");
+        }
+    }
+
+    @PutMapping("/{id}/evaluer")
+    public ResponseEntity<Void> evaluerEvaluation(@PathVariable Long id) {
+        evaluationService.markAsEvaluated(id); // This will now resolve!
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Evaluation> updateEvaluation(@PathVariable Long id, @RequestBody Evaluation updatedEvaluation) {
+        Evaluation result = evaluationService.updateEvaluation(id, updatedEvaluation); // This will now resolve!
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
