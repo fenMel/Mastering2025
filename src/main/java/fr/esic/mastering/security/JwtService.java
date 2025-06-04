@@ -36,6 +36,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
+                .claim("id", id)
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(LocalDateTime.now().plusHours(6).atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(SECRET_KEY) 
