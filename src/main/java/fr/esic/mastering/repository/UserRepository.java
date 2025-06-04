@@ -34,7 +34,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
    
    // Recherche des utilisateurs par type de rôle
    Page<User> findByRole_RoleUtilisateur(RoleType roleType, Pageable pageable);
-
-
+    List<User> findByRole_RoleUtilisateur(String roleName);
     List<User> findByRoleRoleUtilisateur(RoleType roleUtilisateur);
 }
