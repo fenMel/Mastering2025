@@ -1,6 +1,7 @@
 package fr.esic.mastering.entities;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,8 +29,7 @@ public class Evaluation {
     @NotNull(message = "Le candidat est obligatoire")
     private User candidat; // Le candidat évalué
 
-    @NotNull(message = "Le commentaire est obligatoire")
-    @Size(min = 5, message = "Le commentaire doit contenir au moins 5 caractères")
+
     private String commentaire;
 
     private double notePresentation; 
