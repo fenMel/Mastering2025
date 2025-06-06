@@ -424,7 +424,7 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				jury1,
 				cand4,
-				"Commentaire par défaut pour l'évaluation 4.", // Corrected: This comment is now at least 5 characters long.
+				"", // Corrected: This comment is now at least 5 characters long.
 				0, 0, 0, 0, 0,
 				0.0
 		);
