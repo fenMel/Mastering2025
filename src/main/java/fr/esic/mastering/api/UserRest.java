@@ -300,4 +300,31 @@ public class UserRest {
 		return ResponseEntity.ok(new AuthResponse(jwt));
 	}
 
+
+//melissa
+
+	@GetMapping("/candidat")
+	public ResponseEntity<?> getAllCandidats() {
+		try {
+			List<User> candidats = userRepository.findByRole_RoleUtilisateur("CANDIDAT");
+			return ResponseEntity.ok(candidats);
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("Erreur lors de la récupération des candidats.");
+		}
+	}
+
+	// Endpoint pour récupérer un candidat par son ID
+	@GetMapping("/candidat/{id}")
+	public ResponseEntity<?> getCandidatById(@PathVariable Long id) {
+		try {
+			Optional<User> candidat = userRepository.findById(id);
+			if (candidat.isPresent() && "CANDIDAT".equals(candidat.get().getRole().getRoleUtilisateur().name())) {
+				return ResponseEntity.ok(candidat.get());
+			} else {
+				return ResponseEntity.status(404).body("Candidat non trouvé");
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("Erreur lors de la récupération du candidat.");
+		}
+	}
 }
