@@ -2,14 +2,18 @@ package fr.esic.mastering.api;
 
 import fr.esic.mastering.dto.EvaluationDTO;
 import fr.esic.mastering.entities.Evaluation;
+import fr.esic.mastering.entities.User;
 import fr.esic.mastering.services.EvaluationService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -126,12 +130,27 @@ public class EvaluationRest {
      * @return Une réponse avec un message de succès ou d'échec
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEvaluation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteEvaluation(@PathVariable Long id) {
         try {
             evaluationService.deleteEvaluation(id);
-            return ResponseEntity.ok("Évaluation supprimée avec succès !");
+            return ResponseEntity.noContent().build(); // 204 No Content, standard REST
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erreur lors de la suppression de l'évaluation.");
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PutMapping("/{id}/reset")
+    // THIS ANNOTATION IS CRITICAL FOR METHOD-LEVEL SECURITY
+    @PreAuthorize("hasAuthority('CORDINATEUR')")
+    // @PreAuthorize("hasAnyRole('CORDINATEUR', 'JURY')")
+    public ResponseEntity<Evaluation> resetEvaluation(@PathVariable Long id) {
+        try {
+            Evaluation resetEval = evaluationService.resetEvaluationData(id);
+            return ResponseEntity.ok(resetEval);
+        } catch (RuntimeException e) {
+            // Log the exception for more details on the backend
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
         }
     }
     @GetMapping("/{id}")
@@ -163,5 +182,31 @@ public class EvaluationRest {
             return ResponseEntity.notFound().build();
         }
     }
+    /**
+     * Endpoint pour récupérer les informations d'un jury par son ID
+     * @param juryId L'ID du jury (qui est un User avec rôle JURY)
+     * @return Les informations du jury
+     */
+    @GetMapping("/jury-info/{juryId}")
+    public ResponseEntity<?> getJuryInfo(@PathVariable Long juryId) {
+        try {
+            // Utilisez le service User pour récupérer le jury
+            User jury = evaluationService.getJuryInfo(juryId);
+            if (jury == null) {
+                return ResponseEntity.status(404).body("Jury non trouvé avec ID : " + juryId);
+            }
 
+            // Créez un DTO minimal si nécessaire
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", jury.getId());
+            response.put("nom", jury.getNom());
+            response.put("prenom", jury.getPrenom());
+            response.put("email", jury.getEmail());
+            // Ajoutez d'autres champs si nécessaire
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erreur lors de la récupération des informations du jury.");
+        }
+    }
 }
