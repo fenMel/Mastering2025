@@ -2,10 +2,12 @@ package fr.esic.mastering.services;
 
 import fr.esic.mastering.dto.EvaluationDTO;
 import fr.esic.mastering.entities.Evaluation;
+import fr.esic.mastering.entities.RoleType;
 import fr.esic.mastering.entities.User; // Assuming User is your entity for both jury and candidat
 import fr.esic.mastering.repository.EvaluationRepository;
 import fr.esic.mastering.repository.UserRepository; // Assuming you have a UserRepository for User entities
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -262,5 +264,26 @@ public class EvaluationService {
     public List<Evaluation> filterEvaluations(String dateRange, String statut, String candidat) {
         // Implement filtering logic here
         return evaluationRepository.findAll();
+    }
+    public User getJuryInfo(Long juryId) {
+        return userRepository.findJuryById(juryId)
+                .orElseThrow(() -> new EntityNotFoundException("Jury non trouvé"));
+    }
+    public Evaluation resetEvaluationData(Long id) {
+        Optional<Evaluation> optEval = evaluationRepository.findById(id);
+        if (optEval.isPresent()) {
+            Evaluation eval = optEval.get();
+            eval.setNoteClarte(0);
+            eval.setNoteContenu(0);
+            eval.setNotePertinence(0);
+            eval.setNotePresentation(0);
+            eval.setNoteReponses(0);
+            eval.setCommentaire(null);
+            eval.setMoyenne(0);
+            // Ajoute d'autres champs à réinitialiser si besoin
+            return evaluationRepository.save(eval);
+        } else {
+            throw new RuntimeException("Évaluation non trouvée");
+        }
     }
 }
