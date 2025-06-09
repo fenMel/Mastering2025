@@ -411,16 +411,6 @@ public class MasteringApplication implements CommandLineRunner {
 				new Evaluation(null, jury3, cand8, "Sécurité Réseau", generateRandomTime(baseDate.plusDays(7)), "Excellente démonstration, bons exemples.", 18.0, 18.5, 18.0, 17.5, 18.0, 0.0),
 				new Evaluation(null, jury4, cand9, "Réseaux avancés", generateRandomTime(baseDate.plusDays(8)), "Bonne présentation mais manque de structure.", 14.0, 13.5, 13.0, 14.0, 13.5, 0.0),
 				new Evaluation(null, jury5, cand10, "Intelligence artificielle", generateRandomTime(baseDate.plusDays(9)), "Très bonne prestation générale.", 17.0, 17.5, 16.5, 17.0, 17.5, 0.0),
-				new Evaluation(null, jury1, cand1, "Cybersécurité", generateRandomTime(baseDate.plusDays(10)), "Présentation dynamique et engageante.", 16.0, 15.5, 16.5, 17.0, 16.0, 0.0),
-				new Evaluation(null, jury2, cand2, "Data Science", generateRandomTime(baseDate.plusDays(11)), "À revoir sur la partie technique.", 13.0, 13.5, 12.5, 13.5, 14.0, 0.0),
-				new Evaluation(null, jury3, cand3, "IA avancée", generateRandomTime(baseDate.plusDays(12)), "Parfaitement clair.", 18.5, 18.0, 17.5, 18.0, 18.0, 0.0),
-				new Evaluation(null, jury4, cand4, "Projet Agile", generateRandomTime(baseDate.plusDays(13)), "Langage trop familier.", 11.0, 12.5, 13.0, 12.0, 13.0, 0.0),
-				new Evaluation(null, jury5, cand5, "Machine Learning", generateRandomTime(baseDate.plusDays(14)), "Professionnel et précis.", 17.5, 18.0, 17.0, 18.0, 17.5, 0.0),
-				new Evaluation(null, jury1, cand6, "Architecture logicielle", generateRandomTime(baseDate.plusDays(15)), "Peut mieux faire.", 14.0, 14.5, 15.0, 14.0, 13.5, 0.0),
-				new Evaluation(null, jury2, cand7, "Communication", generateRandomTime(baseDate.plusDays(16)), "Moyennement convaincant.", 12.0, 12.5, 13.0, 12.5, 13.0, 0.0),
-				new Evaluation(null, jury3, cand8, "Big Data", generateRandomTime(baseDate.plusDays(17)), "Très belle analyse.", 19.0, 18.5, 18.0, 18.5, 19.0, 0.0),
-				new Evaluation(null, jury4, cand9, "Sécurité Web", generateRandomTime(baseDate.plusDays(18)), "Correct sans plus.", 13.0, 13.0, 13.5, 13.0, 13.0, 0.0),
-				new Evaluation(null, jury5, cand10, "Analyse Cloud", generateRandomTime(baseDate.plusDays(19)), "Excellent !", 19.0, 18.5, 18.0, 18.5, 19.0, 0.0)
 		};
 
 		for (Evaluation e : evaluations) {
