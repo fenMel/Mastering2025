@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.stream.Stream;
+import fr.esic.mastering.utils.DateHelper;
 
 import fr.esic.mastering.entities.*;
 import fr.esic.mastering.repository.*;
@@ -376,76 +378,63 @@ public class MasteringApplication implements CommandLineRunner {
 		 * -------------------------------- Ajout des évaluations
 		 * --------------------------------
 		 */
+		// ... tout le code existant reste inchangé jusqu'à la section Ajout des évaluations
+
 		System.out.println("****************---------------Ajout des évaluations-----------------****************");
 
-		// Retrieve users for evaluation creation
 		jury1 = userRepository.findByEmail("elise.benoit@gmail.com").orElse(null);
 		jury2 = userRepository.findByEmail("mario.rossi@gmail.com").orElse(null);
 		jury3 = userRepository.findByEmail("ines.lopez@gmail.com").orElse(null);
+		jury4 = userRepository.findByEmail("arnaud.dubois@gmail.com").orElse(null);
+		jury5 = userRepository.findByEmail("laura.schmidt@gmail.com").orElse(null);
 
 		cand1 = userRepository.findByEmail("remsou28@gmail.com").orElse(null);
 		cand2 = userRepository.findByEmail("cdmilandou@gmail.com").orElse(null);
 		cand3 = userRepository.findByEmail("jin.kim@gmail.com").orElse(null);
 		cand4 = userRepository.findByEmail("eva.leblanc@gmail.com").orElse(null);
 		cand5 = userRepository.findByEmail("emily.smith@gmail.com").orElse(null);
+		cand6 = userRepository.findByEmail("carlos.fernandez@gmail.com").orElse(null);
+		cand7 = userRepository.findByEmail("yao.kouassi@gmail.com").orElse(null);
+		cand8 = userRepository.findByEmail("anna.ivanov@gmail.com").orElse(null);
+		cand9 = userRepository.findByEmail("lina.omar@gmail.com").orElse(null);
+		cand10 = userRepository.findByEmail("min.park@gmail.com").orElse(null);
 
-		// Create evaluations
-		Evaluation eval1 = new Evaluation(
-				null,
-				jury1,
-				cand1,
-				"Excellente présentation sur l'intelligence artificielle. Concepts bien maîtrisés.",
-				17.5, 16.0, 18.0, 17.0, 16.5,
-				0.0 // Mean will be calculated automatically
-		);
-		eval1.calculerMoyenne();
+		LocalDate baseDate = LocalDate.of(2025, 6, 15);
+		Evaluation[] evaluations = new Evaluation[]{
+				new Evaluation(null, jury1, cand1, "Intelligence Artificielle", generateRandomTime(baseDate.plusDays(0)), "Excellente présentation sur l'intelligence artificielle. Concepts bien maîtrisés.", 17.5, 16.0, 18.0, 17.0, 16.5, 0.0),
+				new Evaluation(null, jury2, cand2, "Cybersécurité", generateRandomTime(baseDate.plusDays(1)), "Bonne présentation sur la cybersécurité. Quelques imprécisions techniques.", 15.0, 14.5, 16.0, 15.5, 14.0, 0.0),
+				new Evaluation(null, jury3, cand3, "Analyse de données", generateRandomTime(baseDate.plusDays(2)), "Présentation satisfaisante mais manque d'exemples concrets.", 13.5, 14.0, 12.5, 13.0, 15.0, 0.0),
+				new Evaluation(null, jury4, cand4, "Management", generateRandomTime(baseDate.plusDays(3)), "Manque d'arguments solides mais discours fluide.", 12.0, 13.0, 12.5, 12.5, 13.0, 0.0),
+				new Evaluation(null, jury5, cand5, "Cloud Computing", generateRandomTime(baseDate.plusDays(4)), "Présentation claire mais contenu un peu superficiel.", 16.0, 13.5, 17.0, 14.0, 15.5, 0.0),
+				new Evaluation(null, jury1, cand6, "Systèmes distribués", generateRandomTime(baseDate.plusDays(5)), "Bonne capacité de synthèse et argumentation logique.", 15.5, 16.0, 15.0, 16.5, 15.5, 0.0),
+				new Evaluation(null, jury2, cand7, "Programmation", generateRandomTime(baseDate.plusDays(6)), "Explication confuse par moments.", 13.5, 13.0, 12.5, 14.0, 13.0, 0.0),
+				new Evaluation(null, jury3, cand8, "Sécurité Réseau", generateRandomTime(baseDate.plusDays(7)), "Excellente démonstration, bons exemples.", 18.0, 18.5, 18.0, 17.5, 18.0, 0.0),
+				new Evaluation(null, jury4, cand9, "Réseaux avancés", generateRandomTime(baseDate.plusDays(8)), "Bonne présentation mais manque de structure.", 14.0, 13.5, 13.0, 14.0, 13.5, 0.0),
+				new Evaluation(null, jury5, cand10, "Intelligence artificielle", generateRandomTime(baseDate.plusDays(9)), "Très bonne prestation générale.", 17.0, 17.5, 16.5, 17.0, 17.5, 0.0),
+				new Evaluation(null, jury1, cand1, "Cybersécurité", generateRandomTime(baseDate.plusDays(10)), "Présentation dynamique et engageante.", 16.0, 15.5, 16.5, 17.0, 16.0, 0.0),
+				new Evaluation(null, jury2, cand2, "Data Science", generateRandomTime(baseDate.plusDays(11)), "À revoir sur la partie technique.", 13.0, 13.5, 12.5, 13.5, 14.0, 0.0),
+				new Evaluation(null, jury3, cand3, "IA avancée", generateRandomTime(baseDate.plusDays(12)), "Parfaitement clair.", 18.5, 18.0, 17.5, 18.0, 18.0, 0.0),
+				new Evaluation(null, jury4, cand4, "Projet Agile", generateRandomTime(baseDate.plusDays(13)), "Langage trop familier.", 11.0, 12.5, 13.0, 12.0, 13.0, 0.0),
+				new Evaluation(null, jury5, cand5, "Machine Learning", generateRandomTime(baseDate.plusDays(14)), "Professionnel et précis.", 17.5, 18.0, 17.0, 18.0, 17.5, 0.0),
+				new Evaluation(null, jury1, cand6, "Architecture logicielle", generateRandomTime(baseDate.plusDays(15)), "Peut mieux faire.", 14.0, 14.5, 15.0, 14.0, 13.5, 0.0),
+				new Evaluation(null, jury2, cand7, "Communication", generateRandomTime(baseDate.plusDays(16)), "Moyennement convaincant.", 12.0, 12.5, 13.0, 12.5, 13.0, 0.0),
+				new Evaluation(null, jury3, cand8, "Big Data", generateRandomTime(baseDate.plusDays(17)), "Très belle analyse.", 19.0, 18.5, 18.0, 18.5, 19.0, 0.0),
+				new Evaluation(null, jury4, cand9, "Sécurité Web", generateRandomTime(baseDate.plusDays(18)), "Correct sans plus.", 13.0, 13.0, 13.5, 13.0, 13.0, 0.0),
+				new Evaluation(null, jury5, cand10, "Analyse Cloud", generateRandomTime(baseDate.plusDays(19)), "Excellent !", 19.0, 18.5, 18.0, 18.5, 19.0, 0.0)
+		};
 
-		Evaluation eval2 = new Evaluation(
-				null,
-				jury2,
-				cand2,
-				"Bonne présentation sur la cybersécurité. Quelques imprécisions techniques.",
-				15.0, 14.5, 16.0, 15.5, 14.0,
-				0.0
-		);
-		eval2.calculerMoyenne();
-
-		Evaluation eval3 = new Evaluation(
-				null,
-				jury3,
-				cand3,
-				"Présentation satisfaisante mais manque d'exemples concrets.",
-				13.5, 14.0, 12.5, 13.0, 15.0,
-				0.0
-		);
-		eval3.calculerMoyenne();
-
-		Evaluation eval4 = new Evaluation(
-				null,
-				jury1,
-				cand4,
-				"", // Corrected: This comment is now at least 5 characters long.
-				0, 0, 0, 0, 0,
-				0.0
-		);
-		eval4.calculerMoyenne();
-
-		Evaluation eval5 = new Evaluation(
-				null,
-				jury2,
-				cand5,
-				"Présentation claire mais contenu un peu superficiel.",
-				16.0, 13.5, 17.0, 14.0, 15.5,
-				0.0
-		);
-		eval5.calculerMoyenne();
-
-		Stream.of(eval1, eval2, eval3, eval4, eval5)
-				.forEach(evaluation -> {
-					evaluationRepository.save(evaluation);
-				});
+		for (Evaluation e : evaluations) {
+			e.calculerMoyenne();
+			evaluationRepository.save(e);
+		}
 
 		System.out.println("****************---------------°FIN° Ajout des évaluations-----------------****************");
+	}
+
+	private LocalDateTime generateRandomTime(LocalDate baseDate) {
+		int randomHour = 8 + new Random().nextInt(11); // Génère une heure entre 8 et 18
+		int randomMinute = new Random().nextInt(60);   // Génère une minute entre 0 et 59
+		return baseDate.atTime(randomHour, randomMinute);
 	}
 
 	// @Bean

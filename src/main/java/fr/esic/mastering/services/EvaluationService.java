@@ -51,6 +51,7 @@ public class EvaluationService {
         if (evaluation.getCandidat() == null || evaluation.getCandidat().getId() == null) {
             throw new IllegalArgumentException("L'évaluation doit être associée à un candidat.");
         }
+
         User candidat = userRepository.findById(evaluation.getCandidat().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Candidat non trouvé avec l'ID : " + evaluation.getCandidat().getId()));
         evaluation.setCandidat(candidat);
@@ -79,6 +80,8 @@ public class EvaluationService {
             evaluation.setNotePertinence(newEvaluation.getNotePertinence());
             evaluation.setNoteReponses(newEvaluation.getNoteReponses());
             evaluation.setCommentaire(newEvaluation.getCommentaire());
+            evaluation.setSujet(newEvaluation.getSujet());
+            evaluation.setDateHeure(newEvaluation.getDateHeure());
 
             // Validate after updating notes
             List<String> validationErrors = validateEvaluation(evaluation);
@@ -205,11 +208,11 @@ public class EvaluationService {
                 evaluation.getNotePertinence(),
                 evaluation.getNoteReponses(),
                 evaluation.getMoyenne(),
-                evaluation.getCommentaire()
-                // Add other fields from EvaluationDTO constructor if they exist and are needed
-                // For example, if EvaluationDTO expects candidatNom, candidatPrenom, sujet, etc.
-                // You'll need to pass them here after fetching.
+                evaluation.getCommentaire(),
+                evaluation.getSujet(),
+                (evaluation.getDateHeure() != null) ? evaluation.getDateHeure().toString() : null
         );
+
     }
 
     /**
