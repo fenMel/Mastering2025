@@ -72,7 +72,7 @@ public class Evaluation {
                 (notePertinence * coefPertinence) +
                 (noteReponses * coefReponses);
 
-        this.moyenne = somme / totalCoef;
+        this.moyenne = Math.round((somme / totalCoef) * 100.0) / 100.0;
         return this.moyenne;
     }
 }

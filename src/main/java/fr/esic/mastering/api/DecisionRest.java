@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +29,15 @@ public class DecisionRest {
             String commentaireFinal = requestData.get("commentaireFinal").toString();
 
             Decision decision = decisionService.addDecision(candidatId, juryId, commentaireFinal);
-            return ResponseEntity.ok("Décision ajoutée avec succès, ID : " + decision.getId());
+            // Retourne un vrai objet JSON
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Décision ajoutée avec succès");
+            response.put("id", decision.getId());
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(error);
         }
     }
 

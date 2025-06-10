@@ -1,15 +1,6 @@
 package fr.esic.mastering.entities;
 
-import java.util.Date;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,11 +20,17 @@ public class Decision {
     @ManyToOne
     private User jury;
 
-    private String commentaireFinal;
-    
-    @Enumerated(EnumType.STRING) // Stocke l'enum sous forme de chaîne dans la base de données
-    @Column(unique = true, nullable = false)
-    private VerdictDecision verdict; // ADMIS, NON_ADMIS, RATTRAPAGE
-   
-}
+    @OneToOne
+    @JoinColumn(name = "evaluation_id", nullable = false, unique = true)
+    private Evaluation evaluation;
 
+    private String commentaireFinal;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private VerdictDecision verdict;
+
+    public Long getEvaluationId() {
+        return evaluation != null ? evaluation.getId() : null;
+    }
+}
