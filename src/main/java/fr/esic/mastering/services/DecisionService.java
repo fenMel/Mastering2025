@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DecisionService {
@@ -51,15 +52,28 @@ public class DecisionService {
         } else {
             verdict = VerdictDecision.NON_ADMIS;
         }
+        Evaluation evaluation = evaluations.get(0);
 
-        // Créer et sauvegarder la décision
-        Decision decision = new Decision();
-        decision.setCandidat(evaluations.get(0).getCandidat());
-        decision.setJury(juryId != null ? evaluations.get(0).getJury() : null); // Optionnel
-        decision.setCommentaireFinal(commentaireFinal);
-        decision.setVerdict(verdict);
 
-        return decisionRepository.save(decision);
+        // Dans ton service
+        Optional<Decision> existing = decisionRepository.findByEvaluation_Id(evaluation.getId());
+        if (existing.isPresent()) {
+            // Met à jour la décision existante
+            Decision decision = existing.get();
+            decision.setVerdict(verdict);
+            decision.setCommentaireFinal(commentaireFinal);
+            // ... autres champs à mettre à jour
+            return decisionRepository.save(decision);
+        } else {
+            // Crée une nouvelle décision
+            Decision decision = new Decision();
+            decision.setCandidat(evaluation.getCandidat());
+            decision.setJury(juryId != null ? evaluation.getJury() : null);
+            decision.setEvaluation(evaluation);
+            decision.setCommentaireFinal(commentaireFinal);
+            decision.setVerdict(verdict);
+            return decisionRepository.save(decision);
+        }
     }
 
     /**

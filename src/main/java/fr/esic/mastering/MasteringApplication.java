@@ -43,6 +43,8 @@ public class MasteringApplication implements CommandLineRunner {
 
 	@Autowired
 	private SessionSoutenanceUserRepository sessionSoutenanceUserRepository;
+	@Autowired
+	private DecisionRepository decisionRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MasteringApplication.class, args);
@@ -407,7 +409,7 @@ public class MasteringApplication implements CommandLineRunner {
 				new Evaluation(null, jury4, cand4, "Management", generateRandomTime(baseDate.plusDays(3)), "Manque d'arguments solides mais discours fluide.", 12.0, 13.0, 12.5, 12.5, 13.0, 0.0),
 				new Evaluation(null, jury5, cand5, "Cloud Computing", generateRandomTime(baseDate.plusDays(4)), "Présentation claire mais contenu un peu superficiel.", 16.0, 13.5, 17.0, 14.0, 15.5, 0.0),
 				new Evaluation(null, jury1, cand6, "Systèmes distribués", generateRandomTime(baseDate.plusDays(5)), "Bonne capacité de synthèse et argumentation logique.", 15.5, 16.0, 15.0, 16.5, 15.5, 0.0),
-				new Evaluation(null, jury2, cand7, "Programmation", generateRandomTime(baseDate.plusDays(6)), "Explication confuse par moments.", 13.5, 13.0, 12.5, 14.0, 13.0, 0.0),
+				new Evaluation(null, jury2, cand7, "Programmation", generateRandomTime(baseDate.plusDays(6)), "", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 				new Evaluation(null, jury3, cand8, "Sécurité Réseau", generateRandomTime(baseDate.plusDays(7)), "Excellente démonstration, bons exemples.", 18.0, 18.5, 18.0, 17.5, 18.0, 0.0),
 				new Evaluation(null, jury4, cand9, "Réseaux avancés", generateRandomTime(baseDate.plusDays(8)), "Bonne présentation mais manque de structure.", 14.0, 13.5, 13.0, 14.0, 13.5, 0.0),
 				new Evaluation(null, jury5, cand10, "Intelligence artificielle", generateRandomTime(baseDate.plusDays(9)), "Très bonne prestation générale.", 17.0, 17.5, 16.5, 17.0, 17.5, 0.0),
@@ -419,6 +421,34 @@ public class MasteringApplication implements CommandLineRunner {
 		}
 
 		System.out.println("****************---------------°FIN° Ajout des évaluations-----------------****************");
+		System.out.println("****************---------------Ajout des Decision-----------------****************");
+		for (Evaluation e : evaluations) {
+			e.calculerMoyenne(); // recalcul au cas où
+
+			// Déterminer le verdict
+			VerdictDecision verdict;
+			if (e.getMoyenne() >= 10.0) {
+				verdict = VerdictDecision.ADMIS;
+			} else if (e.getMoyenne() >= 8.0) {
+				verdict = VerdictDecision.RATTRAPAGE;
+			} else {
+				verdict = VerdictDecision.NON_ADMIS;
+			}
+
+			// Créer et sauvegarder la décision
+			Decision decision = new Decision();
+			decision.setEvaluation(e);
+			decision.setCandidat(e.getCandidat());
+			decision.setJury(e.getJury());
+			decision.setVerdict(verdict);
+			decision.setCommentaireFinal("Décision automatique basée sur la moyenne.");
+
+			decisionRepository.save(decision);
+		}
+
+		System.out.println("****************---------------°FIN° Ajout des Decision-----------------****************");
+
+
 	}
 
 	private LocalDateTime generateRandomTime(LocalDate baseDate) {
