@@ -1,5 +1,6 @@
 package fr.esic.mastering.security;
 
+import fr.esic.mastering.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -33,13 +34,23 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails, Long id) {
+        String prenom = "";
+        String nom = "";
+
+        if (userDetails instanceof User) {
+            prenom = ((User) userDetails).getPrenom();
+            nom = ((User) userDetails).getNom();
+        }
+
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
                 .claim("id", id)
+                .claim("prenom", prenom)
+                .claim("nom", nom)
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(LocalDateTime.now().plusHours(6).atZone(ZoneId.systemDefault()).toInstant()))
-                .signWith(SECRET_KEY) 
+                .signWith(SECRET_KEY)
                 .compact();
     }
     public boolean isTokenValid(String token, UserDetails userDetails) {
