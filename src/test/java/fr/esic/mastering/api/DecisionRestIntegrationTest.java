@@ -31,6 +31,10 @@ import static fr.esic.mastering.entities.RoleType.JURY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Classe de tests d'intégration pour l'API REST des décisions (/api/decisions).
+ * Ces tests vérifient le bon fonctionnement global : base, sécurité JWT, sérialisation JSON, statuts HTTP.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class DecisionRestIntegrationTest {
@@ -49,6 +53,7 @@ class DecisionRestIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private EvaluationRepository evaluationRepository;
 
@@ -57,24 +62,30 @@ class DecisionRestIntegrationTest {
 
     private String jwt;
 
+    /**
+     * Avant chaque test, génère un JWT simulé avec un utilisateur ayant le rôle "CORDINATEUR".
+     */
     @BeforeEach
     void setUp() {
-        // Crée un utilisateur fictif avec autorité CORDINATEUR
         UserDetails userDetails = new User(
                 "dede@gmail.com",
                 "LucCoord123\"",
                 List.of(new SimpleGrantedAuthority("CORDINATEUR"))
         );
-        // Génère un token JWT valide
-        jwt = jwtService.generateToken(userDetails, 1L); // tu peux mettre n'importe quel ID fictif
+        jwt = jwtService.generateToken(userDetails, 1L);
     }
 
+    /**
+     * Teste l'ajout d'une décision complète via l'endpoint POST /api/decisions.
+     * Crée dynamiquement un candidat, un jury et une évaluation pour valider le processus complet.
+     */
     @Test
     void addDecision_ShouldReturnSuccess() throws Exception {
         // 1. Crée et sauvegarde le rôle candidat
         Role roleCandidat = roleRepository.findByRoleUtilisateur(CANDIDAT)
                 .orElseGet(() -> roleRepository.save(new Role(null, CANDIDAT)));
 
+        // 2. Crée le candidat
         fr.esic.mastering.entities.User candidat = new fr.esic.mastering.entities.User();
         candidat.setNom("Candidat");
         candidat.setPrenom("Test");
@@ -86,10 +97,11 @@ class DecisionRestIntegrationTest {
         candidat.setRole(roleCandidat);
         userRepository.save(candidat);
 
-        // 2. Crée et sauvegarde le rôle jury
+        // 3. Crée et sauvegarde le rôle jury
         Role roleJury = roleRepository.findByRoleUtilisateur(JURY)
                 .orElseGet(() -> roleRepository.save(new Role(null, JURY)));
 
+        // 4. Crée le jury
         fr.esic.mastering.entities.User jury = new fr.esic.mastering.entities.User();
         jury.setNom("Jury");
         jury.setPrenom("Test");
@@ -101,7 +113,7 @@ class DecisionRestIntegrationTest {
         jury.setRole(roleJury);
         userRepository.save(jury);
 
-        // 3. Crée et sauvegarde l'évaluation
+        // 5. Crée une évaluation
         Evaluation evaluation = new Evaluation();
         evaluation.setCandidat(candidat);
         evaluation.setJury(jury);
@@ -113,13 +125,14 @@ class DecisionRestIntegrationTest {
         evaluation.setNoteReponses(16);
         evaluationRepository.save(evaluation);
 
-        // 4. Appelle l'API comme avant
+        // 6. Prépare la requête JSON
         Map<String, Object> requestData = new HashMap<>();
         requestData.put("candidatId", candidat.getId());
         requestData.put("juryId", jury.getId());
         requestData.put("commentaireFinal", "Commentaire test");
         requestData.put("evaluationId", evaluation.getId());
 
+        // 7. Exécute la requête POST
         mockMvc.perform(post("/api/decisions")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -128,24 +141,32 @@ class DecisionRestIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Décision ajoutée avec succès"));
     }
 
+    /**
+     * Vérifie que GET /api/decisions retourne une liste vide si aucune décision n'existe.
+     */
     @Test
     void getAllDecisions_ShouldReturnEmptyList() throws Exception {
-        decisionRepository.deleteAll(); // Nettoie la table avant le test
+        decisionRepository.deleteAll(); // Vide la base avant le test
+
         mockMvc.perform(get("/api/decisions")
                         .header("Authorization", "Bearer " + jwt))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
     }
 
+    /**
+     * Teste la suppression d'une décision via DELETE /api/decisions/{id}.
+     * Crée tous les objets nécessaires : rôles, utilisateurs, évaluation et décision.
+     */
     @Test
     void deleteDecision_ShouldReturnSuccess() throws Exception {
-        // 1. Crée et sauvegarde les rôles
+        // 1. Rôles
         Role roleCandidat = roleRepository.findByRoleUtilisateur(CANDIDAT)
                 .orElseGet(() -> roleRepository.save(new Role(null, CANDIDAT)));
         Role roleJury = roleRepository.findByRoleUtilisateur(JURY)
                 .orElseGet(() -> roleRepository.save(new Role(null, JURY)));
 
-        // 2. Crée et sauvegarde le candidat
+        // 2. Candidat
         fr.esic.mastering.entities.User candidat = new fr.esic.mastering.entities.User();
         candidat.setNom("Candidat");
         candidat.setPrenom("Test");
@@ -157,7 +178,7 @@ class DecisionRestIntegrationTest {
         candidat.setRole(roleCandidat);
         userRepository.save(candidat);
 
-        // 3. Crée et sauvegarde le jury
+        // 3. Jury
         fr.esic.mastering.entities.User jury = new fr.esic.mastering.entities.User();
         jury.setNom("Jury");
         jury.setPrenom("Test");
@@ -169,7 +190,7 @@ class DecisionRestIntegrationTest {
         jury.setRole(roleJury);
         userRepository.save(jury);
 
-        // 4. Crée et sauvegarde l'évaluation
+        // 4. Évaluation
         Evaluation evaluation = new Evaluation();
         evaluation.setCandidat(candidat);
         evaluation.setJury(jury);
@@ -181,15 +202,16 @@ class DecisionRestIntegrationTest {
         evaluation.setNoteReponses(16);
         evaluationRepository.save(evaluation);
 
-        // 5. Crée et sauvegarde la décision avec tous les champs obligatoires
+        // 5. Décision
         Decision decision = new Decision();
         decision.setCommentaireFinal("Test Decision");
         decision.setCandidat(candidat);
         decision.setJury(jury);
         decision.setEvaluation(evaluation);
-        decision.setVerdict(VerdictDecision.ADMIS); // ou NON_ADMIS selon ton enum
+        decision.setVerdict(VerdictDecision.ADMIS);
         decisionRepository.save(decision);
 
+        // 6. Suppression via API
         mockMvc.perform(delete("/api/decisions/" + decision.getId())
                         .header("Authorization", "Bearer " + jwt))
                 .andExpect(status().isOk())
