@@ -55,6 +55,21 @@ class Evaluation {
     + calculerMoyenne() : double
 }
 
+class ArchiveDecision {
+    - id : Long
+    - candidatId : Long
+    - candidatNom : String
+    - candidatPrenom : String
+    - juryId : Long
+    - juryNom : String
+    - juryPrenom : String
+    - moyenne : Double
+    - commentaire : String
+    - verdict : String
+    - dateArchivage : LocalDateTime
+    - archivePar : String
+}
+
 ' ==== REPOSITORIES ====
 interface UserRepository {
     + findByEmailAndPassword(email: String, password: String) : Optional<User>
@@ -79,6 +94,11 @@ interface DecisionRepository {
 interface EvaluationRepository {
     + findByCandidatId(candidatId: Long) : List<Evaluation>
     + findByJuryId(juryId: Long) : List<Evaluation>
+}
+
+interface ArchiveDecisionRepository {
+    + save(archiveDecision: ArchiveDecision) : ArchiveDecision
+    + findAll() : List<ArchiveDecision>
 }
 
 ' ==== SERVICES ====
@@ -108,6 +128,11 @@ class EvaluationService {
     + validateEvaluation(evaluation: Evaluation) : List<String>
 }
 
+class ArchiveDecisionService {
+    + save(dto: ArchiveDecisionDto) : ArchiveDecisionDto
+    + findAll() : List<ArchiveDecisionDto>
+}
+
 ' ==== RELATIONS ====
 RoleType <|-- Role
 VerdictDecision <|-- Decision
@@ -125,14 +150,17 @@ UserRepository .. User
 RoleRepository .. Role
 DecisionRepository .. Decision
 EvaluationRepository .. Evaluation
+ArchiveDecisionRepository .. ArchiveDecision
 
 UserService .. UserRepository
 DecisionService .. DecisionRepository
 DecisionService .. EvaluationRepository
 EvaluationService .. EvaluationRepository
+ArchiveDecisionService .. ArchiveDecisionRepository
 
 UserService .. User
 DecisionService .. Decision
 EvaluationService .. Evaluation
+ArchiveDecisionService .. ArchiveDecision
 
 @enduml
