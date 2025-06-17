@@ -24,33 +24,43 @@ import static fr.esic.mastering.entities.RoleType.JURY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Tests d'intégration de l'API REST /api/evaluations avec SpringBootTest et MockMvc.
+ * Vérifie les réponses HTTP réelles, la sécurité JWT, et la sérialisation JSON.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class EvaluationRestIntegrationTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mockMvc; // Permet d'appeler les endpoints REST comme si on était un client HTTP
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper; // Sert à convertir les objets Java ↔ JSON
 
     @Autowired
-    private JwtService jwtService;
+    private JwtService jwtService; // Utilisé pour générer un token JWT valide
 
     private String jwt;
 
+    /**
+     * Génère un token JWT avant chaque test avec un utilisateur fictif ayant le rôle "CORDINATEUR".
+     */
     @BeforeEach
     void setUp() {
-        // Crée un utilisateur fictif avec autorité CORDINATEUR
         UserDetails userDetails = new User(
                 "dede@gmail.com",
                 "LucCoord123\"",
                 List.of(new SimpleGrantedAuthority("CORDINATEUR"))
         );
-        // Génère un token JWT valide
-        jwt = jwtService.generateToken(userDetails, 1L); // tu peux mettre n'importe quel ID fictif
+
+        // Génère un token JWT simulé pour l'utilisateur
+        jwt = jwtService.generateToken(userDetails, 1L);
     }
 
+    /**
+     * Vérifie que l’endpoint GET /api/evaluations retourne un statut 200 OK avec du JSON.
+     */
     @Test
     void getAllEvaluations_ShouldReturnOk() throws Exception {
         mockMvc.perform(get("/api/evaluations")
@@ -59,36 +69,30 @@ class EvaluationRestIntegrationTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
+    /**
+     * Vérifie que l’ajout d’une évaluation via POST /api/evaluations fonctionne correctement.
+     */
     @Test
     void addEvaluation_ShouldReturnOk() throws Exception {
         Evaluation evaluation = new Evaluation();
+
+        // Création d’un utilisateur jury fictif
         Role roleJury = new Role();
         roleJury.setRoleUtilisateur(JURY);
         fr.esic.mastering.entities.User jury = new fr.esic.mastering.entities.User(
-                1L, // ID
-                "Doe", // Nom
-                "John", // Prenom
-                new Date(), // DateNaissance
-                "123456789", // Tel
-                "john.doe@example.com", // Email
-                "Paris", // LieuxDeNaissance
-                "password123", // Password
-                roleJury // Role
+                1L, "Doe", "John", new Date(), "123456789", "john.doe@example.com",
+                "Paris", "password123", roleJury
         );
 
+        // Création d’un utilisateur candidat fictif
         Role roleCandidat = new Role();
         roleCandidat.setRoleUtilisateur(CANDIDAT);
         fr.esic.mastering.entities.User candidat = new fr.esic.mastering.entities.User(
-                1L, // ID
-                "Statham", // Nom
-                "Jason", // Prenom
-                new Date(), // DateNaissance
-                "123456789", // Tel
-                "Jason.doe@example.com", // Email
-                "America", // LieuxDeNaissance
-                "password123", // Password
-                roleCandidat // Role
+                1L, "Statham", "Jason", new Date(), "123456789", "Jason.doe@example.com",
+                "America", "password123", roleCandidat
         );
+
+        // Données de l’évaluation
         evaluation.setCommentaire("Test intégré");
         evaluation.setJury(jury);
         evaluation.setCandidat(candidat);
@@ -97,8 +101,8 @@ class EvaluationRestIntegrationTest {
         evaluation.setNoteClarte(13);
         evaluation.setNotePertinence(15);
         evaluation.setNoteReponses(16);
-        evaluation.setDateHeure(LocalDate.now().atStartOfDay()); // Example of a required field
-        evaluation.setSujet("Sujet de l'évaluation"); // Example of another required field
+        evaluation.setDateHeure(LocalDate.now().atStartOfDay());
+        evaluation.setSujet("Sujet de l'évaluation");
 
         mockMvc.perform(post("/api/evaluations")
                         .header("Authorization", "Bearer " + jwt)
@@ -107,26 +111,35 @@ class EvaluationRestIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Vérifie la récupération d’une évaluation existante via GET /api/evaluations/{id}.
+     */
     @Test
     void getEvaluationById_ShouldReturnOkOrNotFound() throws Exception {
         mockMvc.perform(get("/api/evaluations/1")
                         .header("Authorization", "Bearer " + jwt))
-                .andExpect(status().isOk()); // ou isNotFound() si l'ID n'existe pas
+                .andExpect(status().isOk()); // ou isNotFound() si 1 n'existe pas
     }
 
+    /**
+     * Vérifie la suppression d’une évaluation et de sa décision associée si elle existe.
+     */
     @Test
     void deleteEvaluation_ShouldReturnNoContentOrNotFound() throws Exception {
-        // Supprime d'abord la décision liée à l'évaluation 1 (si elle existe)
+        // Tente de supprimer la décision liée à l’évaluation (si présente)
         mockMvc.perform(delete("/api/decisions/1")
                         .header("Authorization", "Bearer " + jwt))
                 .andExpect(status().isOk()); // ou isNotFound()
 
-        // Ensuite, supprime l'évaluation
+        // Supprime ensuite l’évaluation
         mockMvc.perform(delete("/api/evaluations/1")
                         .header("Authorization", "Bearer " + jwt))
                 .andExpect(status().isNoContent()); // ou isNotFound()
     }
 
+    /**
+     * Vérifie que la réinitialisation d’une évaluation fonctionne via PUT /api/evaluations/{id}/reset.
+     */
     @Test
     void resetEvaluation_ShouldReturnOkOrNotFound() throws Exception {
         mockMvc.perform(put("/api/evaluations/1/reset")
