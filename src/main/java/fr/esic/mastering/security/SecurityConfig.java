@@ -45,8 +45,9 @@ public class SecurityConfig {
                         .requestMatchers("/complete-profile", "/complete-profile/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Ensure this line is correct for CORDINATEUR
                         .requestMatchers(HttpMethod.PUT, "/api/evaluations/*/reset").hasAuthority("CORDINATEUR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/decisions/**").hasAuthority("CORDINATEUR")
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
@@ -61,7 +62,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOriginPattern("*"); // Autoriser toutes les origines
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Authorization", "Content-Type", "Accept", "X-User"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
