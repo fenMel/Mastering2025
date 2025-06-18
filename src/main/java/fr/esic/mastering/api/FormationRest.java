@@ -1,6 +1,7 @@
 package fr.esic.mastering.api;
 
 import fr.esic.mastering.entities.Formation;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import fr.esic.mastering.repository.FormationRepository;
 import fr.esic.mastering.repository.SessionFormationRepository;
@@ -13,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -65,21 +67,20 @@ public class FormationRest {
     }
 
     // 5. Supprimer une formation par son ID
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<String> deleteFormation(@PathVariable Long id) {
-        return formationRepository.findById(id).map(existingFormation -> {
-            // Supprimer les sessions associées à la formation
-            sessionFormationRepository.deleteByFormationId(id);
+    @Transactional
 
-            // Supprimer la formation
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Map<String, String>> deleteFormation(@PathVariable Long id) {
+        return formationRepository.findById(id).map(existingFormation -> {
+            sessionFormationRepository.deleteByFormationId(id);
             formationRepository.delete(existingFormation);
-            return ResponseEntity.ok("Formation avec l'ID " + id + " a été supprimée avec succès.");
+            return ResponseEntity.ok(Map.of("message", "Formation supprimée avec toutes ses sessions."));
         }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Formation avec l'ID " + id + " n'a pas été trouvée."));
+                .body(Map.of("error", "Formation avec l'ID " + id + " n'a pas été trouvée.")));
     }
 
-  @PreAuthorize("hasAuthority('CORDINATEUR') or hasAuthority('SUPERVISOR') or hasAuthority('ADMIN')")
-@DeleteMapping("/{id}")
+
+    @DeleteMapping("/{id}")
 public ResponseEntity<String> forceDeleteFormation(@PathVariable Long id) {
     Optional<Formation> formationOptional = formationRepository.findById(id);
 

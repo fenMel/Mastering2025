@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/formations/all").permitAll()               
                         .requestMatchers(HttpMethod.DELETE, "/api/formations/*/force-delete").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/formations/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/formations/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/formations/delete/**").permitAll()
 
                         .anyRequest().authenticated()
                 )

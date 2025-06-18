@@ -333,7 +333,6 @@ public class MasteringApplication implements CommandLineRunner {
         // Exemple pour la Session IA - Paris
         SessionSoutenance soutenance1 = new SessionSoutenance(
             null, // ID sera généré automatiquement
-            session1, // Lien avec la session de formation "Session IA - Paris"
             LocalDate.parse("15/06/2025", formatter), // Date de début de la soutenance
             "Jean Dupont", // Responsable de la soutenance
             "Prévue pour le 15 juin 2025, pour les projets IA",
@@ -345,7 +344,6 @@ public class MasteringApplication implements CommandLineRunner {
         // Exemple pour la Session Cybersécurité - Lyon
         SessionSoutenance soutenance2 = new SessionSoutenance(
             null, // ID sera généré automatiquement
-            session2, // Lien avec la session de formation "Session Cybersécurité - Lyon"
             LocalDate.parse("20/06/2025", formatter), // Date de début de la soutenance
             "Marie Lemoine", // Responsable de la soutenance
             "Prévue pour les 20-21 juin 2025, pour les projets de cybersécurité",
@@ -357,7 +355,6 @@ public class MasteringApplication implements CommandLineRunner {
         // Exemple pour la Session Cloud - Marseille
         SessionSoutenance soutenance3 = new SessionSoutenance(
             null, // ID sera généré automatiquement
-            session3, // Lien avec la session de formation "Session Cloud - Marseille"
             LocalDate.parse("25/06/2025", formatter), // Date de début de la soutenance
             "Luc Martin", // Responsable de la soutenance
             "Prévue pour les 25 juin 2025, pour les projets Cloud",
@@ -369,7 +366,6 @@ public class MasteringApplication implements CommandLineRunner {
         // Exemple pour la Session Data Science - Toulouse
         SessionSoutenance soutenance4 = new SessionSoutenance(
             null, // ID sera généré automatiquement
-            session4, // Lien avec la session de formation "Session Data Science - Toulouse"
             LocalDate.parse("01/07/2025", formatter), // Date de début de la soutenance
             "Sophie Durand", // Responsable de la soutenance
             "Prévue pour le 1er juillet 2025, pour les projets Data Science",
@@ -381,7 +377,6 @@ public class MasteringApplication implements CommandLineRunner {
         // Exemple pour la Session Gestion de Projet - Nantes
         SessionSoutenance soutenance5 = new SessionSoutenance(
             null, // ID sera généré automatiquement
-            session5, // Lien avec la session de formation "Session Gestion de Projet - Nantes"
             LocalDate.parse("10/07/2025", formatter), // Date de début de la soutenance
             "Paul Lefevre", // Responsable de la soutenance
             "Prévue pour le 10 juillet 2025, pour les projets de gestion de projet",

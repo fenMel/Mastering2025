@@ -17,6 +17,5 @@ public interface FormationRepository extends JpaRepository<Formation, Long> {
 
 
     Optional<Formation> findByNom(String nom);
-@EntityGraph(attributePaths = "sessionsFormation")
-Optional<Formation> findById(Long id);
+
 }

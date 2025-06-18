@@ -34,13 +34,13 @@ public class SessionSoutenance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+/*
     //  Lien avec la session de formation sélectionnée
     //@JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "session_formation_id", nullable = false)
     private SessionFormation sessionFormation;
-
+*/
     
 
     //  Date de début de la soutenance
