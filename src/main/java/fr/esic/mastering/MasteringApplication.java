@@ -166,6 +166,16 @@ public class MasteringApplication implements CommandLineRunner {
 					userRepository.save(user);
 				});
 
+// 				.peek(user -> {
+//        user.setResetToken(null);
+//        user.setResetTokenExpiry(null);
+//    })
+//    .forEach(user -> {
+//        userRepository.save(user);
+//    });
+
+userRepository.flush();
+
 		System.out.println("****************---------------°FIN° Ajout des users-----------------****************");
 
 		/*
@@ -229,65 +239,65 @@ public class MasteringApplication implements CommandLineRunner {
 						"Licence ou équivalent en gestion ou informatique",
 						"Piloter efficacement des projets complexes en entreprise.")));
 
+						formationRepository.flush();
+
 		System.out.println("****************---------------°FIN° Ajout des Formations-----------------****************");
 
 		/*
 		 * -------------------------------- Ajout des sessions de formations
 		 * --------------------------------
 		 */
-		// We're no longer using a fixed formatter here, but keep it if used for parsing other fixed dates
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		System.out.println("****************---------------Ajout des sessions de formations-----------------****************");
 
-		// Dynamically setting future dates using LocalDate.now()
 		SessionFormation session1 = new SessionFormation(
 				null,
 				"Session IA - Paris",
 				"Session avancée sur l'intelligence artificielle.",
-				today.plusDays(7), // Starts 7 days from today
-				today.plusMonths(6).plusDays(7), // Ends 6 months and 7 days from today
+				LocalDate.parse("01/08/2025", formatter),
+				LocalDate.parse("01/12/2025", formatter),
 				iaFormation,
-				new ArrayList<>()
+				new ArrayList<>(java.util.Arrays.asList(cand1, cand2)) // Ajout des candidats
 		);
 
 		SessionFormation session2 = new SessionFormation(
 				null,
 				"Session Cybersécurité - Lyon",
 				"Session sécurité offensive et défensive.",
-				today.plusWeeks(4), // Starts 4 weeks from today
-				today.plusMonths(7).plusWeeks(4), // Ends 7 months and 4 weeks from today
+				LocalDate.parse("15/08/2025", formatter),
+				LocalDate.parse("15/12/2025", formatter),
 				cyberFormation,
-				new ArrayList<>()
+				new ArrayList<>(java.util.Arrays.asList(cand6, cand7, cand8)) // Ajout des candidats
 		);
 
 		SessionFormation session3 = new SessionFormation(
 				null,
 				"Session Cloud - Marseille",
 				"Session sur les solutions cloud modernes.",
-				today.plusMonths(2).plusDays(10), // Starts 2 months and 10 days from today
-				today.plusMonths(8).plusDays(10), // Ends 8 months and 10 days from today
+				LocalDate.parse("01/08/2025", formatter),
+				LocalDate.parse("01/01/2026", formatter),
 				cloudFormation,
-				new ArrayList<>()
+				new ArrayList<>(java.util.Arrays.asList(cand3, cand4, cand5)) // Ajout des candidats
 		);
 
 		SessionFormation session4 = new SessionFormation(
 				null,
 				"Session Data Science - Toulouse",
 				"Session pour apprendre à analyser des données.",
-				today.plusMonths(3).plusDays(5), // Starts 3 months and 5 days from today
-				today.plusMonths(9).plusDays(5), // Ends 9 months and 5 days from today
+				LocalDate.parse("01/09/2025", formatter),
+				LocalDate.parse("01/03/2026", formatter),
 				dataFormation,
-				new ArrayList<>()
+				new ArrayList<>(java.util.Arrays.asList(cand9)) // Ajout des candidats
 		);
 
 		SessionFormation session5 = new SessionFormation(
 				null,
 				"Session Gestion de Projet - Nantes",
 				"Session sur les méthodes agiles et traditionnelles.",
-				today.plusMonths(4).plusDays(1), // Starts 4 months and 1 day from today
-				today.plusMonths(10).plusDays(1), // Ends 10 months and 1 day from today
+				LocalDate.parse("01/10/2025", formatter),
+				LocalDate.parse("01/04/2026", formatter),
 				gestionFormation,
-				new ArrayList<>()
+				new ArrayList<>(java.util.Arrays.asList(cand10)) // Ajout des candidats
 		);
 
 		Stream.of(session1, session2, session3, session4, session5)
@@ -295,17 +305,22 @@ public class MasteringApplication implements CommandLineRunner {
 					sessionFormationRepository.save(session);
 				});
 
-		System.out.println("****************---------------°FIN° Ajout des sessions de formations-----------------****************");
+				
+
+		System.out.println("****************---------------°FIN° Ajout des users-----------------****************");
 
 		/*
-		 * -------------------------------- Ajout des sessions de soutenances
+		 * --------------------------------
+		 * Ajout 
 		 * --------------------------------
 		 */
+
+		
 		System.out.println("****************---------------Ajout des sessions de soutenances-----------------****************");
 
 		// Re-using the formatter for soutenance dates, assuming they are fixed but still need to be valid.
 		// You might want to adjust these to be dynamically linked to the sessionFormation dates for consistency.
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Re-declare or move up if needed
+		// (formatter already declared above)
 
 		// Ensure soutenance dates are after their respective session formation dates
 		// For example, soutenance1 should be after session1.dateDebut
@@ -450,11 +465,11 @@ public class MasteringApplication implements CommandLineRunner {
 
 	// @Bean
 	// public JavaMailSender javaMailSender() {
-	//     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-	//     mailSender.setHost("smtp.example.com");
-	//     mailSender.setPort(587);
-	//     mailSender.setUsername("yanatremy09@gmail.com");
-	//     mailSender.setPassword("azerty");
-	//     return mailSender;
+	// JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+	// mailSender.setHost("smtp.example.com");
+	// mailSender.setPort(587);
+	// mailSender.setUsername("yanatremy09@gmail.com");
+	// mailSender.setPassword("azerty");
+	// return mailSender;
 	// }
 }

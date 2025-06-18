@@ -14,6 +14,8 @@ import fr.esic.mastering.repository.RoleRepository;
 import fr.esic.mastering.services.EmailService;
 import fr.esic.mastering.services.EmailTemplateService;
 import fr.esic.mastering.services.UserAttributeService;
+import fr.esic.mastering.services.UserService;
+
 import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -170,14 +173,14 @@ public class UserRest {
 
 
 	@GetMapping("users/{userId}")
-	public Optional<User> User(@PathVariable Long userId) {
-		return userRepository.findById(userId);
-	}
-
-	@GetMapping("users/email/{userEmail}")
-	public Optional<User> User(@PathVariable String userEmail) {
-		return userRepository.findByEmail(userEmail);
-	}
+		public Optional<User> getUserById(@PathVariable Long userId) {
+			return userRepository.findById(userId);
+		}
+	
+		@GetMapping("users/email/{userEmail}")
+		public Optional<User> getUserByEmailPath(@PathVariable String userEmail) {
+			return userRepository.findByEmail(userEmail);
+		}
 
 	@GetMapping("email")
 	public Optional<User> getUserByEmail(@RequestParam String email) {
@@ -303,15 +306,15 @@ public class UserRest {
 
 //melissa
 
-	@GetMapping("/candidat")
-	public ResponseEntity<?> getAllCandidats() {
-		try {
-			List<User> candidats = userRepository.findByRole_RoleUtilisateur("CANDIDAT");
-			return ResponseEntity.ok(candidats);
-		} catch (Exception e) {
-			return ResponseEntity.status(500).body("Erreur lors de la récupération des candidats.");
-		}
-	}
+	// @GetMapping("/candidat")
+	// public ResponseEntity<?> getAllCandidats() {
+	// 	try {
+	// 		List<User> candidats = userRepository.findByRole_RoleUtilisateur("CANDIDAT");
+	// 		return ResponseEntity.ok(candidats);
+	// 	} catch (Exception e) {
+	// 		return ResponseEntity.status(500).body("Erreur lors de la récupération des candidats.");
+	// 	}
+	// }
 
 	// Endpoint pour récupérer un candidat par son ID
 	@GetMapping("/candidat/{id}")
@@ -327,4 +330,37 @@ public class UserRest {
 			return ResponseEntity.status(500).body("Erreur lors de la récupération du candidat.");
 		}
 	}
+
+	
+     
+	 private final UserService userService;
+
+   
+    
+public List<UserDTO> getUsersByRoleCandidat() {
+    List<User> candidats = userRepository.findByRole_RoleUtilisateur(RoleType.CANDIDAT);
+    return candidats.stream()
+                   .map(UserMapper::toDTO)
+                   .collect(Collectors.toList());
+}
+
+	//  @GetMapping("/candidats")
+    // public List<User> getCandidats() {
+    //     return userRepository.findByRoleUtilisateur(RoleType.CANDIDAT);
+    // }
+
+
+	@Autowired
+@PreAuthorize("hasRole('CORDINATEUR')")
+@GetMapping("/api/users/candidats")
+public List<UserDTO> getAllCandidats() {
+   return userService.getAllCandidats();
+
+  
+
+}
+
+
+    
+
 }
