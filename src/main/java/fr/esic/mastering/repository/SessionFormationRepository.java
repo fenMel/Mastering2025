@@ -1,6 +1,7 @@
 package fr.esic.mastering.repository;
 
 
+import fr.esic.mastering.entities.Formation;
 import fr.esic.mastering.entities.SessionFormation;
 
 import java.util.Optional;
@@ -13,8 +14,9 @@ public interface SessionFormationRepository extends JpaRepository<SessionFormati
 
     Optional<SessionFormation> findByTitre(String titre);
     // Tu peux ajouter des méthodes spécifiques ici si nécessaire 
+    void deleteByFormation(Formation formation);
 
-
+    void deleteByFormationId(Long formationId);
     
 }
 

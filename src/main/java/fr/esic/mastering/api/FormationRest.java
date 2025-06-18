@@ -3,10 +3,13 @@ package fr.esic.mastering.api;
 import fr.esic.mastering.entities.Formation;
 import org.springframework.http.HttpStatus;
 import fr.esic.mastering.repository.FormationRepository;
+import fr.esic.mastering.repository.SessionFormationRepository;
 import fr.esic.mastering.services.FormationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +22,10 @@ public class FormationRest {
 
     @Autowired
     private FormationRepository formationRepository;
+
+    @Autowired
+    private SessionFormationRepository sessionFormationRepository;
+
     @Autowired
     private FormationService formationService;
    
@@ -51,18 +58,42 @@ public class FormationRest {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public Formation createFormation1(@RequestBody Formation formation) {
-        return formationService.createFormation(formation);
-    } 
-    
+    @PostMapping("/create")
+    public ResponseEntity<Formation> createFormation(@RequestBody Formation newFormation) {
+        Formation savedFormation = formationRepository.save(newFormation);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedFormation);
+    }
+
     // 5. Supprimer une formation par son ID
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<String> deleteFormation(@PathVariable Long id) {
         return formationRepository.findById(id).map(existingFormation -> {
+            // Supprimer les sessions associées à la formation
+            sessionFormationRepository.deleteByFormationId(id);
+
+            // Supprimer la formation
             formationRepository.delete(existingFormation);
             return ResponseEntity.ok("Formation avec l'ID " + id + " a été supprimée avec succès.");
         }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Formation avec l'ID " + id + " n'a pas été trouvée."));
     }
+
+  @PreAuthorize("hasAuthority('CORDINATEUR') or hasAuthority('SUPERVISOR') or hasAuthority('ADMIN')")
+@DeleteMapping("/{id}")
+public ResponseEntity<String> forceDeleteFormation(@PathVariable Long id) {
+    Optional<Formation> formationOptional = formationRepository.findById(id);
+
+    if (formationOptional.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Formation avec l'ID " + id + " introuvable.");
+    }
+
+    Formation formation = formationOptional.get();
+
+    sessionFormationRepository.deleteByFormation(formation);
+    formationRepository.delete(formation);
+
+    return ResponseEntity.ok("Formation supprimée avec toutes ses sessions.");
+}
+
 }

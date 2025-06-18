@@ -47,6 +47,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/evaluations/*/reset").hasAuthority("CORDINATEUR")
                         .requestMatchers(HttpMethod.DELETE, "/api/decisions/**").hasAuthority("CORDINATEUR")
+                        .requestMatchers(HttpMethod.POST, "/api/formations/create").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/formations/all").permitAll()               
+                        .requestMatchers(HttpMethod.DELETE, "/api/formations/*/force-delete").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/formations/**").permitAll()
 
                         .anyRequest().authenticated()
                 )

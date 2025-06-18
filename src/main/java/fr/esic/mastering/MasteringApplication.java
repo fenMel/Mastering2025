@@ -5,9 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.stream.Stream;
-import fr.esic.mastering.utils.DateHelper;
 
 import fr.esic.mastering.entities.*;
 import fr.esic.mastering.repository.*;
@@ -15,11 +13,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import fr.esic.mastering.entities.Formation;
+import fr.esic.mastering.entities.Role;
+import fr.esic.mastering.entities.RoleType;
+import fr.esic.mastering.entities.SessionFormation;
+import fr.esic.mastering.entities.SessionSoutenance;
+import fr.esic.mastering.entities.User;
+import fr.esic.mastering.repository.FormationRepository;
+import fr.esic.mastering.repository.RoleRepository;
+import fr.esic.mastering.repository.SessionFormationRepository;
+import fr.esic.mastering.repository.UserRepository;
+import fr.esic.mastering.repository.SessionFormationRepository;
+import fr.esic.mastering.repository.SessionSoutenanceRepository;
+import fr.esic.mastering.repository.SessionSoutenanceUserRepository;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class MasteringApplication implements CommandLineRunner {
-
 	@Autowired
 	private UserRepository userRepository;
 
@@ -39,12 +58,13 @@ public class MasteringApplication implements CommandLineRunner {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private SessionSoutenanceRepository sessionSoutenanceRepository;
+    private SessionSoutenanceRepository sessionSoutenanceRepository;
 
 	@Autowired
 	private SessionSoutenanceUserRepository sessionSoutenanceUserRepository;
-	@Autowired
-	private DecisionRepository decisionRepository;
+
+
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(MasteringApplication.class, args);
@@ -54,7 +74,6 @@ public class MasteringApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		LocalDate today = LocalDate.now(); // Get the current date once
 
 		/*
 		 * -------------------------------- Ajout des Roles
@@ -187,7 +206,8 @@ public class MasteringApplication implements CommandLineRunner {
 						"Formation sur l'intelligence artificielle, deep learning, machine learning.",
 						"2 ans",
 						"Licence Informatique ou équivalent",
-						"Maîtriser les techniques d'IA pour développer des solutions intelligentes.")));
+						"Maîtriser les techniques d'IA pour développer des solutions intelligentes."
+						)));
 
 		Formation cyberFormation = formationRepository.findByNom("Master Cybersécurité")
 				.orElseGet(() -> formationRepository.save(new Formation(
@@ -239,17 +259,15 @@ public class MasteringApplication implements CommandLineRunner {
 		 * -------------------------------- Ajout des sessions de formations
 		 * --------------------------------
 		 */
-		// We're no longer using a fixed formatter here, but keep it if used for parsing other fixed dates
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		System.out.println("****************---------------Ajout des sessions de formations-----------------****************");
 
-		// Dynamically setting future dates using LocalDate.now()
 		SessionFormation session1 = new SessionFormation(
 				null,
 				"Session IA - Paris",
 				"Session avancée sur l'intelligence artificielle.",
-				today.plusDays(7), // Starts 7 days from today
-				today.plusMonths(6).plusDays(7), // Ends 6 months and 7 days from today
+				LocalDate.parse("01/08/2025", formatter),
+				LocalDate.parse("01/12/2025", formatter),
 				iaFormation,
 				new ArrayList<>()
 		);
@@ -258,8 +276,8 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				"Session Cybersécurité - Lyon",
 				"Session sécurité offensive et défensive.",
-				today.plusWeeks(4), // Starts 4 weeks from today
-				today.plusMonths(7).plusWeeks(4), // Ends 7 months and 4 weeks from today
+				LocalDate.parse("15/08/2025", formatter),
+				LocalDate.parse("15/12/2025", formatter),
 				cyberFormation,
 				new ArrayList<>()
 		);
@@ -268,8 +286,8 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				"Session Cloud - Marseille",
 				"Session sur les solutions cloud modernes.",
-				today.plusMonths(2).plusDays(10), // Starts 2 months and 10 days from today
-				today.plusMonths(8).plusDays(10), // Ends 8 months and 10 days from today
+				LocalDate.parse("01/08/2025", formatter),
+				LocalDate.parse("01/01/2026", formatter),
 				cloudFormation,
 				new ArrayList<>()
 		);
@@ -278,8 +296,8 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				"Session Data Science - Toulouse",
 				"Session pour apprendre à analyser des données.",
-				today.plusMonths(3).plusDays(5), // Starts 3 months and 5 days from today
-				today.plusMonths(9).plusDays(5), // Ends 9 months and 5 days from today
+				LocalDate.parse("01/09/2025", formatter),
+				LocalDate.parse("01/03/2026", formatter),
 				dataFormation,
 				new ArrayList<>()
 		);
@@ -288,8 +306,8 @@ public class MasteringApplication implements CommandLineRunner {
 				null,
 				"Session Gestion de Projet - Nantes",
 				"Session sur les méthodes agiles et traditionnelles.",
-				today.plusMonths(4).plusDays(1), // Starts 4 months and 1 day from today
-				today.plusMonths(10).plusDays(1), // Ends 10 months and 1 day from today
+				LocalDate.parse("01/10/2025", formatter),
+				LocalDate.parse("01/04/2026", formatter),
 				gestionFormation,
 				new ArrayList<>()
 		);
@@ -299,80 +317,85 @@ public class MasteringApplication implements CommandLineRunner {
 					sessionFormationRepository.save(session);
 				});
 
-		System.out.println("****************---------------°FIN° Ajout des sessions de formations-----------------****************");
+				
+
+		System.out.println("****************---------------°FIN° Ajout des users-----------------****************");
 
 		/*
-		 * -------------------------------- Ajout des sessions de soutenances
+		 * --------------------------------
+		 * Ajout 
 		 * --------------------------------
 		 */
+
 		System.out.println("****************---------------Ajout des sessions de soutenances-----------------****************");
 
-		// Re-using the formatter for soutenance dates, assuming they are fixed but still need to be valid.
-		// You might want to adjust these to be dynamically linked to the sessionFormation dates for consistency.
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Re-declare or move up if needed
+		// Créez les sessions de soutenance avec les données nécessaires
+        // Exemple pour la Session IA - Paris
+        SessionSoutenance soutenance1 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session1, // Lien avec la session de formation "Session IA - Paris"
+            LocalDate.parse("15/06/2025", formatter), // Date de début de la soutenance
+            "Jean Dupont", // Responsable de la soutenance
+            "Prévue pour le 15 juin 2025, pour les projets IA",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
 
-		// Ensure soutenance dates are after their respective session formation dates
-		// For example, soutenance1 should be after session1.dateDebut
-		SessionSoutenance soutenance1 = new SessionSoutenance(
-				null, // ID will be generated automatically
-				session1, // Link with the "Session IA - Paris" training session
-				session1.getDateFin().plusDays(5), // 5 days after the session ends (ensures future)
-				"Jean Dupont", // Soutenance manager
-				"Prévue pour les projets IA",
-				new ArrayList<>(), // List of participants
-				LocalDateTime.now(), // Creation date
-				LocalDateTime.now()  // Last modification
-		);
+        // Exemple pour la Session Cybersécurité - Lyon
+        SessionSoutenance soutenance2 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session2, // Lien avec la session de formation "Session Cybersécurité - Lyon"
+            LocalDate.parse("20/06/2025", formatter), // Date de début de la soutenance
+            "Marie Lemoine", // Responsable de la soutenance
+            "Prévue pour les 20-21 juin 2025, pour les projets de cybersécurité",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
 
-		SessionSoutenance soutenance2 = new SessionSoutenance(
-				null, // ID will be generated automatically
-				session2, // Link with the "Session Cybersécurité - Lyon" training session
-				session2.getDateFin().plusDays(5), // 5 days after the session ends
-				"Marie Lemoine", // Soutenance manager
-				"Prévue pour les projets de cybersécurité",
-				new ArrayList<>(), // List of participants
-				LocalDateTime.now(), // Creation date
-				LocalDateTime.now()  // Last modification
-		);
+        // Exemple pour la Session Cloud - Marseille
+        SessionSoutenance soutenance3 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session3, // Lien avec la session de formation "Session Cloud - Marseille"
+            LocalDate.parse("25/06/2025", formatter), // Date de début de la soutenance
+            "Luc Martin", // Responsable de la soutenance
+            "Prévue pour les 25 juin 2025, pour les projets Cloud",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
 
-		SessionSoutenance soutenance3 = new SessionSoutenance(
-				null, // ID will be generated automatically
-				session3, // Link with the "Session Cloud - Marseille" training session
-				session3.getDateFin().plusDays(5), // 5 days after the session ends
-				"Luc Martin", // Soutenance manager
-				"Prévue pour les projets Cloud",
-				new ArrayList<>(), // List of participants
-				LocalDateTime.now(), // Creation date
-				LocalDateTime.now()  // Last modification
-		);
+        // Exemple pour la Session Data Science - Toulouse
+        SessionSoutenance soutenance4 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session4, // Lien avec la session de formation "Session Data Science - Toulouse"
+            LocalDate.parse("01/07/2025", formatter), // Date de début de la soutenance
+            "Sophie Durand", // Responsable de la soutenance
+            "Prévue pour le 1er juillet 2025, pour les projets Data Science",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
 
-		SessionSoutenance soutenance4 = new SessionSoutenance(
-				null, // ID will be generated automatically
-				session4, // Link with the "Session Data Science - Toulouse" training session
-				session4.getDateFin().plusDays(5), // 5 days after the session ends
-				"Sophie Durand", // Soutenance manager
-				"Prévue pour les projets Data Science",
-				new ArrayList<>(), // List of participants
-				LocalDateTime.now(), // Creation date
-				LocalDateTime.now()  // Last modification
-		);
+        // Exemple pour la Session Gestion de Projet - Nantes
+        SessionSoutenance soutenance5 = new SessionSoutenance(
+            null, // ID sera généré automatiquement
+            session5, // Lien avec la session de formation "Session Gestion de Projet - Nantes"
+            LocalDate.parse("10/07/2025", formatter), // Date de début de la soutenance
+            "Paul Lefevre", // Responsable de la soutenance
+            "Prévue pour le 10 juillet 2025, pour les projets de gestion de projet",
+            new ArrayList<>(), // Liste des participants
+            LocalDateTime.now(), // Date de création
+            LocalDateTime.now()  // Dernière modification
+        );
 
-		SessionSoutenance soutenance5 = new SessionSoutenance(
-				null, // ID will be generated automatically
-				session5, // Link with the "Session Gestion de Projet - Nantes" training session
-				session5.getDateFin().plusDays(5), // 5 days after the session ends
-				"Paul Lefevre", // Soutenance manager
-				"Prévue pour les projets de gestion de projet",
-				new ArrayList<>(), // List of participants
-				LocalDateTime.now(), // Creation date
-				LocalDateTime.now()  // Last modification
-		);
-
-		sessionSoutenanceRepository.save(soutenance1);
-		sessionSoutenanceRepository.save(soutenance2);
-		sessionSoutenanceRepository.save(soutenance3);
-		sessionSoutenanceRepository.save(soutenance4);
-		sessionSoutenanceRepository.save(soutenance5);
+        // Vous pouvez enregistrer ces sessions dans votre base de données via votre repository
+         sessionSoutenanceRepository.save(soutenance1);
+         sessionSoutenanceRepository.save(soutenance2);
+         sessionSoutenanceRepository.save(soutenance3);
+         sessionSoutenanceRepository.save(soutenance4);
+         sessionSoutenanceRepository.save(soutenance5);
 
 		System.out.println("****************---------------°FIN° Ajout des session_soutenance -----------------****************");
 
@@ -380,82 +403,95 @@ public class MasteringApplication implements CommandLineRunner {
 		 * -------------------------------- Ajout des évaluations
 		 * --------------------------------
 		 */
-		// ... tout le code existant reste inchangé jusqu'à la section Ajout des évaluations
+		// System.out.println("****************---------------Ajout des évaluations-----------------****************");
 
-		System.out.println("****************---------------Ajout des évaluations-----------------****************");
+		// // Récupération des utilisateurs pour créer les évaluations
+		// jury1 = userRepository.findByEmail("elise.benoit@gmail.com").orElse(null);
+		// jury2 = userRepository.findByEmail("mario.rossi@gmail.com").orElse(null);
+		// jury3 = userRepository.findByEmail("ines.lopez@gmail.com").orElse(null);
 
-		jury1 = userRepository.findByEmail("elise.benoit@gmail.com").orElse(null);
-		jury2 = userRepository.findByEmail("mario.rossi@gmail.com").orElse(null);
-		jury3 = userRepository.findByEmail("ines.lopez@gmail.com").orElse(null);
-		jury4 = userRepository.findByEmail("arnaud.dubois@gmail.com").orElse(null);
-		jury5 = userRepository.findByEmail("laura.schmidt@gmail.com").orElse(null);
+		// cand1 = userRepository.findByEmail("remsou28@gmail.com").orElse(null);
+		// cand2 = userRepository.findByEmail("cdmilandou@gmail.com").orElse(null);
+		// cand3 = userRepository.findByEmail("jin.kim@gmail.com").orElse(null);
+		// cand4 = userRepository.findByEmail("eva.leblanc@gmail.com").orElse(null);
+		// cand5 = userRepository.findByEmail("emily.smith@gmail.com").orElse(null);
 
-		cand1 = userRepository.findByEmail("remsou28@gmail.com").orElse(null);
-		cand2 = userRepository.findByEmail("cdmilandou@gmail.com").orElse(null);
-		cand3 = userRepository.findByEmail("jin.kim@gmail.com").orElse(null);
-		cand4 = userRepository.findByEmail("eva.leblanc@gmail.com").orElse(null);
-		cand5 = userRepository.findByEmail("emily.smith@gmail.com").orElse(null);
-		cand6 = userRepository.findByEmail("carlos.fernandez@gmail.com").orElse(null);
-		cand7 = userRepository.findByEmail("yao.kouassi@gmail.com").orElse(null);
-		cand8 = userRepository.findByEmail("anna.ivanov@gmail.com").orElse(null);
-		cand9 = userRepository.findByEmail("lina.omar@gmail.com").orElse(null);
-		cand10 = userRepository.findByEmail("min.park@gmail.com").orElse(null);
+		// // Création des évaluations
+		// Evaluation eval1 = new Evaluation(
+		// 		null,
+		// 		jury1,
+		// 		cand1,
+		// 		"Excellente présentation sur l'intelligence artificielle. Concepts bien maîtrisés.",
+		// 		17.5, 16.0, 18.0, 17.0, 16.5,
+		// 		0.0 // La moyenne sera calculée automatiquement
+		// );
+		// eval1.calculerMoyenne();
 
-		LocalDate baseDate = LocalDate.of(2025, 6, 15);
-		Evaluation[] evaluations = new Evaluation[]{
-				new Evaluation(null, jury1, cand1, "Intelligence Artificielle", generateRandomTime(baseDate.plusDays(0)), "Excellente présentation sur l'intelligence artificielle. Concepts bien maîtrisés.", 17.5, 16.0, 18.0, 17.0, 16.5, 0.0),
-				new Evaluation(null, jury2, cand2, "Cybersécurité", generateRandomTime(baseDate.plusDays(1)), "Bonne présentation sur la cybersécurité. Quelques imprécisions techniques.", 15.0, 14.5, 16.0, 15.5, 14.0, 0.0),
-				new Evaluation(null, jury3, cand3, "Analyse de données", generateRandomTime(baseDate.plusDays(2)), "Présentation satisfaisante mais manque d'exemples concrets.", 13.5, 14.0, 12.5, 13.0, 15.0, 0.0),
-				new Evaluation(null, jury4, cand4, "Management", generateRandomTime(baseDate.plusDays(3)), "Manque d'arguments solides mais discours fluide.", 12.0, 13.0, 12.5, 12.5, 13.0, 0.0),
-				new Evaluation(null, jury5, cand5, "Cloud Computing", generateRandomTime(baseDate.plusDays(4)), "Présentation claire mais contenu un peu superficiel.", 16.0, 13.5, 17.0, 14.0, 15.5, 0.0),
-				new Evaluation(null, jury1, cand6, "Systèmes distribués", generateRandomTime(baseDate.plusDays(5)), "Bonne capacité de synthèse et argumentation logique.", 15.5, 16.0, 15.0, 16.5, 15.5, 0.0),
-				new Evaluation(null, jury2, cand7, "Programmation", generateRandomTime(baseDate.plusDays(6)), "", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-				new Evaluation(null, jury3, cand8, "Sécurité Réseau", generateRandomTime(baseDate.plusDays(7)), "Excellente démonstration, bons exemples.", 18.0, 18.5, 18.0, 17.5, 18.0, 0.0),
-				new Evaluation(null, jury4, cand9, "Réseaux avancés", generateRandomTime(baseDate.plusDays(8)), "Bonne présentation mais manque de structure.", 14.0, 13.5, 13.0, 14.0, 13.5, 0.0),
-				new Evaluation(null, jury5, cand10, "Intelligence artificielle", generateRandomTime(baseDate.plusDays(9)), "Très bonne prestation générale.", 17.0, 17.5, 16.5, 17.0, 17.5, 0.0),
-		};
+		// Evaluation eval2 = new Evaluation(
+		// 		null,
+		// 		jury2,
+		// 		cand2,
+		// 		"Bonne présentation sur la cybersécurité. Quelques imprécisions techniques.",
+		// 		15.0, 14.5, 16.0, 15.5, 14.0,
+		// 		0.0
+		// );
+		// eval2.calculerMoyenne();
 
-		for (Evaluation e : evaluations) {
-			e.calculerMoyenne();
-			evaluationRepository.save(e);
-		}
+		// Evaluation eval3 = new Evaluation(
+		// 		null,
+		// 		jury3,
+		// 		cand3,
+		// 		"Présentation satisfaisante mais manque d'exemples concrets.",
+		// 		13.5, 14.0, 12.5, 13.0, 15.0,
+		// 		0.0
+		// );
+		// eval3.calculerMoyenne();
+
+		// Evaluation eval4 = new Evaluation(
+		// 		null,
+		// 		jury1,
+		// 		cand4,
+		// 		"Très bonne maîtrise du sujet et excellente réponse aux questions.",
+		// 		18.0, 17.5, 17.0, 18.5, 19.0,
+		// 		0.0
+		// );
+		// eval4.calculerMoyenne();
+
+		// Evaluation eval5 = new Evaluation(
+		// 		null,
+		// 		jury2,
+		// 		cand5,
+		// 		"Présentation claire mais contenu un peu superficiel.",
+		// 		16.0, 13.5, 17.0, 14.0, 15.5,
+		// 		0.0
+		// );
+		// eval5.calculerMoyenne();
+
+		// Stream.of(eval1, eval2, eval3, eval4, eval5)
+		// 		.forEach(evaluation -> {
+		// 			evaluationRepository.save(evaluation);
+		// 		});
 
 		System.out.println("****************---------------°FIN° Ajout des évaluations-----------------****************");
-		System.out.println("****************---------------Ajout des Decision-----------------****************");
-		for (Evaluation e : evaluations) {
-			e.calculerMoyenne(); // recalcul au cas où
-
-			// Déterminer le verdict
-			VerdictDecision verdict;
-			if (e.getMoyenne() >= 10.0) {
-				verdict = VerdictDecision.ADMIS;
-			} else if (e.getMoyenne() >= 8.0) {
-				verdict = VerdictDecision.RATTRAPAGE;
-			} else {
-				verdict = VerdictDecision.NON_ADMIS;
-			}
-
-			// Créer et sauvegarder la décision
-			Decision decision = new Decision();
-			decision.setEvaluation(e);
-			decision.setCandidat(e.getCandidat());
-			decision.setJury(e.getJury());
-			decision.setVerdict(verdict);
-			decision.setCommentaireFinal("Décision automatique basée sur la moyenne.");
-
-			decisionRepository.save(decision);
-		}
-
-		System.out.println("****************---------------°FIN° Ajout des Decision-----------------****************");
 
 
-	}
+		
+		};
 
-	private LocalDateTime generateRandomTime(LocalDate baseDate) {
-		int randomHour = 8 + new Random().nextInt(11); // Génère une heure entre 8 et 18
-		int randomMinute = new Random().nextInt(60);   // Génère une minute entre 0 et 59
-		return baseDate.atTime(randomHour, randomMinute);
-	}
+		/*
+		 * --------------------------------
+		 * Fin d'ajout des sessions de formations
+		 * --------------------------------
+		 */
+		
+		/*
+		 * --------------------------------
+		 * Ajout 
+		 * --------------------------------
+		 */
+
+	
+
 
 	// @Bean
 	// public JavaMailSender javaMailSender() {
@@ -466,4 +502,6 @@ public class MasteringApplication implements CommandLineRunner {
 	//     mailSender.setPassword("azerty");
 	//     return mailSender;
 	// }
+
 }
+
