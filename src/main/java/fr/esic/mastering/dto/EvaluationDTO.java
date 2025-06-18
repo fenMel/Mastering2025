@@ -12,10 +12,14 @@ public class EvaluationDTO {
     private double noteReponses;
     private double moyenne; // Inclure la moyenne calculée
     private String commentaire;
+    private String sujet;
+    private String dateHeure; // sous forme de String (ex: ISO 8601) ou LocalDateTime si tu veux le garder typé
 
     // Constructeur complet
-    public EvaluationDTO(Long id, Long juryId, Long candidatId, double notePresentation, double noteContenu,
-                         double noteClarte, double notePertinence, double noteReponses, double moyenne, String commentaire) {
+    public EvaluationDTO(Long id, Long juryId, Long candidatId,
+                         double notePresentation, double noteContenu, double noteClarte,
+                         double notePertinence, double noteReponses, double moyenne,
+                         String commentaire, String sujet, String dateHeure) {
         this.id = id;
         this.juryId = juryId;
         this.candidatId = candidatId;
@@ -26,7 +30,10 @@ public class EvaluationDTO {
         this.noteReponses = noteReponses;
         this.moyenne = moyenne;
         this.commentaire = commentaire;
+        this.sujet = sujet;
+        this.dateHeure = dateHeure;
     }
+
 
     // Constructeur vide
     public EvaluationDTO() {
@@ -112,6 +119,22 @@ public class EvaluationDTO {
     public void setCommentaire(String commentaire) {
         this.commentaire = commentaire;
     }
+    public String getSujet() {
+        return sujet;
+    }
+
+    public void setSujet(String sujet) {
+        this.sujet = sujet;
+    }
+
+    public String getDateHeure() {
+        return dateHeure;
+    }
+
+    public void setDateHeure(String dateHeure) {
+        this.dateHeure = dateHeure;
+    }
+
 
     // Méthode toString() pour le débogage ou l'affichage
     @Override
@@ -127,6 +150,9 @@ public class EvaluationDTO {
                 ", noteReponses=" + noteReponses +
                 ", moyenne=" + moyenne +
                 ", commentaire='" + commentaire + '\'' +
+                ", sujet='" + sujet + '\'' +
+                ", dateHeure='" + dateHeure + '\'' +
+
                 '}';
     }
 }

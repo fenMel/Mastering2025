@@ -1,0 +1,138 @@
+@startuml
+
+' ==== ENUMS ====
+enum RoleType {
+    CORDINATEUR
+    CANDIDAT
+    JURY
+    APPRENANT
+    SUPERVISOR
+    SUPPORT_STAFF
+}
+enum VerdictDecision {
+    ADMIS
+    NON_ADMIS
+    RATTRAPAGE
+}
+
+' ==== ENTITIES ====
+class Role {
+    - id : Long
+    - roleUtilisateur : RoleType
+}
+
+class User {
+    - id : Long
+    - nom : String
+    - prenom : String
+    - DateNaissance : Date
+    - tel : String
+    - email : String
+    - lieuxDeNaissance : String
+    - password : String
+    - role : Role
+}
+
+class Decision {
+    - id : Long
+    - candidat : User
+    - jury : User
+    - commentaireFinal : String
+    - verdict : VerdictDecision
+}
+
+class Evaluation {
+    - id : Long
+    - jury : User
+    - candidat : User
+    - commentaire : String
+    - notePresentation : double
+    - noteContenu : double
+    - noteClarte : double
+    - notePertinence : double
+    - noteReponses : double
+    - moyenne : double
+    + calculerMoyenne() : double
+}
+
+' ==== REPOSITORIES ====
+interface UserRepository {
+    + findByEmailAndPassword(email: String, password: String) : Optional<User>
+    + getByLoginAndPassword(email: String, password: String) : Optional<User>
+    + findByEmail(email: String) : Optional<User>
+    + findByResetToken(resetToken: String) : Optional<User>
+    + getByEmail(email: String) : Optional<User>
+    + findByRoleRoleUtilisateur(roleUtilisateur: RoleType) : List<User>
+}
+
+interface RoleRepository{
+    + findByRoleUtilisateur(roleUtilisateur: RoleType) : Optional<Role>
+    + findById(id: Long) : Optional<Role>
+}
+
+interface DecisionRepository {
+    + findByCandidatId(candidatId: Long) : List<Decision>
+    + findByJuryId(juryId: Long) : List<Decision>
+    + findByVerdict(verdict: VerdictDecision) : List<Decision>
+}
+
+interface EvaluationRepository {
+    + findByCandidatId(candidatId: Long) : List<Evaluation>
+    + findByJuryId(juryId: Long) : List<Evaluation>
+}
+
+' ==== SERVICES ====
+class UserService {
+    + addUser(user: User) : User
+    + updateUser(id: Long, user: User) : User
+    + getAllUsers() : List<User>
+    + getUserById(id: Long) : Optional<User>
+    + deleteUser(id: Long)
+}
+
+class DecisionService {
+    + addDecision(candidatId: Long, juryId: Long, commentaireFinal: String) : Decision
+    + getAllDecisions() : List<Decision>
+    + getDecisionsByCandidat(candidatId: Long) : List<Decision>
+    + deleteDecision(id: Long)
+}
+
+class EvaluationService {
+    + addEvaluation(evaluation: Evaluation) : Evaluation
+    + updateEvaluation(id: Long, newEvaluation: Evaluation) : Evaluation
+    + getAll() : List<Evaluation>
+    + getEvaluationsByCandidat(candidatId: Long) : List<Evaluation>
+    + getEvaluationsByJury(juryId: Long) : List<Evaluation>
+    + deleteEvaluation(id: Long)
+    + convertToDTO(evaluation: Evaluation) : EvaluationDTO
+    + validateEvaluation(evaluation: Evaluation) : List<String>
+}
+
+' ==== RELATIONS ====
+RoleType <|-- Role
+VerdictDecision <|-- Decision
+
+Role "1" o-- "*" User : role
+User "1" o-- "*" Decision : decisions
+User "1" o-- "*" Evaluation : evaluations
+
+Decision o-- User : candidat
+Decision o-- User : jury
+Evaluation o-- User : jury
+Evaluation o-- User : candidat
+
+UserRepository .. User
+RoleRepository .. Role
+DecisionRepository .. Decision
+EvaluationRepository .. Evaluation
+
+UserService .. UserRepository
+DecisionService .. DecisionRepository
+DecisionService .. EvaluationRepository
+EvaluationService .. EvaluationRepository
+
+UserService .. User
+DecisionService .. Decision
+EvaluationService .. Evaluation
+
+@enduml
