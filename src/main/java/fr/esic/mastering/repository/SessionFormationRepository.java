@@ -1,21 +1,22 @@
 package fr.esic.mastering.repository;
 
+import java.util.List;
 
-import fr.esic.mastering.entities.SessionFormation;
-
-import java.util.Optional;
-
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-@Repository  // Ajoute cette annotation si elle n'est pas présente
+import fr.esic.mastering.entities.RoleType;
+import fr.esic.mastering.entities.SessionFormation;
+import fr.esic.mastering.entities.User;
+@Repository
 public interface SessionFormationRepository extends JpaRepository<SessionFormation, Long> {
-
-    Optional<SessionFormation> findByTitre(String titre);
-    // Tu peux ajouter des méthodes spécifiques ici si nécessaire 
+   
 
 
-    
+@Query("SELECT DISTINCT s FROM SessionFormation s LEFT JOIN FETCH s.formation LEFT JOIN FETCH s.candidats")
+List<SessionFormation> findAllWithFormationAndCandidats();
+
 }
-
-

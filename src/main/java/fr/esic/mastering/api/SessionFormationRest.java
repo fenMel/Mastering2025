@@ -4,70 +4,101 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import fr.esic.mastering.dto.SessionFormationDTO;
+
+import fr.esic.mastering.dto.SessionFormationDetailDTO;
+
+import fr.esic.mastering.dto.UserDTO;
 import fr.esic.mastering.entities.SessionFormation;
 import fr.esic.mastering.services.SessionFormationService;
+
+import fr.esic.mastering.services.UserService;
+
 import jakarta.validation.Valid;
 
+@CrossOrigin("*")
 
+@RestController
 
-    @RestController
 @RequestMapping("/api/sessionsFormation")
+
 public class SessionFormationRest {
 
     @Autowired
+
     private SessionFormationService sessionFormationService;
 
-    // Ajouter une session
+    @Autowired
+
+    private UserService userService;
+
+  
+
+    @GetMapping
+
+    public List<SessionFormationDetailDTO> getAllSessions() {
+
+        return sessionFormationService.getAllSessions();
+
+    }
+
+
+    @GetMapping("/{id}")
+
+    public SessionFormationDetailDTO getSessionById(@PathVariable Long id) {
+
+        return sessionFormationService.getById(id);
+
+    }
+
+    
+
+    // @PostMapping
+
+    // public void createSession(@Valid @RequestBody SessionFormationDTO dto) {
+
+    //     sessionFormationService.create(dto);
+
+    // }
+
+   
+
+    @PutMapping("/{id}")
+
+    public void updateSession(@PathVariable Long id, @Valid @RequestBody SessionFormationDTO dto) {
+
+        sessionFormationService.update(id, dto);
+
+    }
+
+    
+
+    @DeleteMapping("/{id}")
+
+    public void deleteSession(@PathVariable Long id) {
+
+        sessionFormationService.delete(id);
+
+    }
+
+   
+
+    @GetMapping("/candidats")
+
+    public List<UserDTO> getAllCandidats() {
+
+        return userService.getAllCandidats();
+
+    }
 
     @PostMapping
-public ResponseEntity<?> createSessionFormation(@Valid @RequestBody SessionFormation sessionFormation) {
-    return ResponseEntity.ok(sessionFormationService.createSessionFormation(sessionFormation));
-}
-
-    // Récupérer toutes les sessions
-    @GetMapping
-    public ResponseEntity<List<SessionFormation>> getAllSessions() {
-        List<SessionFormation> sessions = sessionFormationService.getAllSessions();
-        return ResponseEntity.ok(sessions);
-    }
-
-    // Mettre à jour une session
-    @PutMapping("/{id}")
-    public ResponseEntity<SessionFormation> updateSessionFormation(@PathVariable Long id, @RequestBody SessionFormation sessionDetails) {
-        SessionFormation updatedSession = sessionFormationService.updateSessionFormation(id, sessionDetails);
-        return ResponseEntity.ok(updatedSession);
-    }
-
-    // Supprimer une session
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSessionFormation(@PathVariable Long id) {
-        sessionFormationService.deleteSessionFormation(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // ✅ GET /api/sessionsFormation/id/5
-@GetMapping("/id/{id}")
-public ResponseEntity<SessionFormation> getSessionById(@PathVariable Long id) {
-    SessionFormation session = sessionFormationService.getSessionById(id);
-    return ResponseEntity.ok(session);
-}
-
-// ✅ GET /api/sessionsFormation/titre/Java Avancé
-@GetMapping("/titre/{titre}")
-public ResponseEntity<SessionFormation> getSessionByTitre(@PathVariable String titre) {
-    SessionFormation session = sessionFormationService.getSessionByTitre(titre);
-    return ResponseEntity.ok(session);
+public ResponseEntity<SessionFormation> createSession(@RequestBody SessionFormationDTO dto) {
+   SessionFormation created = sessionFormationService.createSessionFormation(dto);
+   return ResponseEntity.ok(created);
 }
 
 
-
 }
+ 
