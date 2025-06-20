@@ -20,4 +20,5 @@ public class ConvocationService {
     public Optional<Convocation> getConvocationById(Long id) {
         return repository.findById(id);
 }
+
 }

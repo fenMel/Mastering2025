@@ -192,7 +192,7 @@ public class PdfGenerationService {
 
         // Handle location with null check
         recipientInfo.add(new Chunk("Lieu : ", boldFont));
-        recipientInfo.add(new Chunk(convocation.getLocation() != null ? convocation.getLocation() : "Non spécifié", normalFont));
+        recipientInfo.add(new Chunk(convocation.getLieu() != null ? convocation.getLieu() : "Non spécifié", normalFont));
 
         infoCell.addElement(recipientInfo);
         infoTable.addCell(infoCell);

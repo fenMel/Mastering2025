@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.mail.MessagingException;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 import fr.esic.mastering.dto.ConvocationDTO;
@@ -37,7 +38,7 @@ public class ConvocationRest {
     public ResponseEntity<?> sendConvocation(@RequestBody ConvocationDTO convocationDTO) {
         System.out.println("Received data: " + convocationDTO);
         try {
-            Optional<User> userOpt = userRepository.findById(convocationDTO.getUserId());
+            Optional<User> userOpt = userRepository.findByEmail(convocationDTO.getEmail());
 
             if (!userOpt.isPresent()) {
                 return ResponseEntity.badRequest().body("User not found");
@@ -60,44 +61,15 @@ public class ConvocationRest {
 
             emailService.sendConvocationEmail(user, subject, messageText, pdfContent, filename);
 
-            return ResponseEntity.ok("Convocation envoyée avec succès à " + user.getEmail());
+            return ResponseEntity.ok(Map.of("message", "Convocation envoyée avec succès à " + user.getEmail()));
         } catch (DocumentException | MessagingException e) {
             return ResponseEntity.internalServerError().body("Error sending convocation: " + e.getMessage());
         }
     }
 
     // Example endpoint to test PDF generation without sending email
-    @GetMapping("/test-pdf/{userId}")
-    public ResponseEntity<?> testPdfGeneration(@PathVariable  Long userId) {
-        try {
-            Optional<User> userOpt = userRepository.findById(userId);
 
-            if (!userOpt.isPresent()) {
-                return ResponseEntity.badRequest().body("User not found");
-            }
 
-            User user = userOpt.get();
 
-            // Create test convocation data
-            ConvocationDTO testConvocation = new ConvocationDTO();
-            testConvocation.setUserId(userId);
-            testConvocation.setTitle("Test Convocation");
-            testConvocation.setLocation("Salle de Conférence A");
-            testConvocation.setDateTime(LocalDateTime.now().plusDays(7));
-            testConvocation.setAdditionalInfo("Ceci est un test de génération de PDF.");
-
-            byte[] pdfContent = pdfService.generateConvocationPdf(user, testConvocation);
-
-            // Return the PDF as a response
-            return ResponseEntity
-                    .ok()
-                    .header("Content-Type", "application/pdf")
-                    .header("Content-Disposition", "attachment; filename=test_convocation.pdf")
-                    .body(pdfContent);
-
-        } catch (DocumentException e) {
-            return ResponseEntity.internalServerError().body("Error generating PDF: " + e.getMessage());
-        }
-    }
 
 }
