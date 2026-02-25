@@ -1,0 +1,161 @@
+"Title","Body","Assignees","Labels","Milestone","Status"
+"T1.1 — Créer projet Supabase + BDD 18 tables","**SP:** 4 | **Durée:** 3h | **Exigence:** B.2
+
+**Sous-tâches:**
+- [ ] Créer projet Supabase EU
+- [ ] Exécuter creation_database.sql
+- [ ] Vérifier 18 tables et FK
+- [ ] Configurer .env.local
+- [ ] Test SELECT de connexion
+
+**Livrable:** Projet Supabase + .env.example
+**Tech:** Supabase · PostgreSQL","fenzi-melissa","melissa,B.2,P1,Sprint-1","Sprint 1","Todo"
+"T1.2 — Insérer données de test (insert.sql)","**SP:** 2 | **Durée:** 2h | **Exigence:** B.2
+
+**Sous-tâches:**
+- [ ] Exécuter insert.sql
+- [ ] 20 clients, 45 réparations, 10 employés, 5 boutiques
+- [ ] Prendre captures config Supabase
+- [ ] Rédiger doc_connexion.pdf
+
+**Livrable:** Données insérées + doc_connexion.pdf
+**Tech:** Supabase · SQL","fenzi-melissa","melissa,B.2,P1,Sprint-1","Sprint 1","Todo"
+"T1.3 — Init Next.js 14 + Tailwind + Supabase client","**SP:** 3 | **Durée:** 2h30 | **Exigence:** B.1
+
+**Sous-tâches:**
+- [ ] npx create-next-app@latest
+- [ ] Configurer Tailwind CSS
+- [ ] Installer @supabase/supabase-js
+- [ ] Créer lib/supabase.ts
+- [ ] Créer repo GitHub
+
+**Livrable:** Repo GitHub + app qui démarre
+**Tech:** Next.js 14 · Tailwind · TypeScript","ndongo-joss","joss,B.1,P1,Sprint-1","Sprint 1","Todo"
+"T1.4 — Layout + navigation (sidebar, routes)","**SP:** 3 | **Durée:** 2h | **Exigence:** B.1
+
+**Sous-tâches:**
+- [ ] app/layout.tsx avec sidebar
+- [ ] Routes /clients /reparations /dashboard
+- [ ] NavLink avec état actif
+- [ ] Design responsive Tailwind
+
+**Livrable:** app/layout.tsx + pages vides
+**Tech:** Next.js App Router · Tailwind","fenzi-melissa","melissa,B.1,P1,Sprint-1","Sprint 1","Todo"
+"T1.5 — Auth JWT : login / logout / middleware","**SP:** 4 | **Durée:** 3h | **Exigence:** B.4
+
+**Sous-tâches:**
+- [ ] Page /auth/login
+- [ ] supabase.auth.signInWithPassword()
+- [ ] Middleware Next.js protection routes
+- [ ] Afficher nom utilisateur + logout
+
+**Livrable:** auth/login.tsx + middleware.ts
+**Tech:** Supabase Auth · Next.js middleware","fenzi-melissa","melissa,B.4,P1,Sprint-1","Sprint 1","Todo"
+"T1.6 — Rôles Technicien & Responsable (RLS Supabase)","**SP:** 3 | **Durée:** 2h30 | **Exigence:** B.4
+
+**Sous-tâches:**
+- [ ] Créer 2 comptes test avec rôle
+- [ ] Policy RLS Technicien WHERE id_employe = auth.uid()
+- [ ] Policy Responsable voit tout
+- [ ] Tester les 2 comptes
+
+**Livrable:** rls_policies.sql + 2 comptes test
+**Tech:** Supabase RLS · PostgreSQL policies","fenzi-melissa","melissa,B.4,P1,Sprint-1","Sprint 1","Todo"
+"T1.7 — 📸 Kanban captures #1 et #2 (Sprint 1)","**SP:** 1 | **Durée:** 1h | **Obligatoire pour A.2**
+
+**Sous-tâches:**
+- [ ] Capture #1 : Kanban Jour 1 (tout en To Do)
+- [ ] Sprint Review Jour 5
+- [ ] Capture #2 : Kanban fin Sprint 1
+
+**Livrable:** kanban_S1_debut.png + kanban_S1_fin.png","ndongo-joss","joss,P2,Sprint-1,kanban","Sprint 1","Todo"
+"🟡 T2.1 — Formulaire création + modification client","**SP:** 5 | **Durée:** 4h | **Exigence:** B.1
+⭐ Tâche surlignée cahier des charges
+
+**Sous-tâches:**
+- [ ] Page /clients/new (nom, prénom, tél, email, ville)
+- [ ] Validation React Hook Form + Zod
+- [ ] INSERT INTO client
+- [ ] Page /clients/[id]/edit (pré-remplissage + UPDATE)
+
+**Livrable:** clients/new.tsx + clients/[id]/edit.tsx
+**Tech:** React Hook Form · Zod · Supabase","ndongo-joss","joss,B.1,P1,Sprint-2,exigence-directe","Sprint 2","Todo"
+"🟡 T2.2 — Liste clients + recherche nom/tél/email","**SP:** 4 | **Durée:** 3h | **Exigence:** B.1
+⭐ Tâche surlignée cahier des charges
+
+**Sous-tâches:**
+- [ ] Page /clients tableau colonnes
+- [ ] Recherche temps réel .ilike() sur 3 champs
+- [ ] Bouton Nouveau client
+- [ ] Lien vers /clients/[id]
+
+**Livrable:** clients/index.tsx
+**Tech:** Supabase .ilike() · React useState","ndongo-joss","joss,B.1,P1,Sprint-2,exigence-directe","Sprint 2","Todo"
+"T2.3 — Page détail client + historique réparations","**SP:** 4 | **Durée:** 3h | **Exigence:** B.1
+
+**Sous-tâches:**
+- [ ] Page /clients/[id]
+- [ ] Afficher toutes les infos client
+- [ ] JOIN réparations WHERE id_client = :id
+- [ ] Liste réparations avec statut, date, appareil
+
+**Livrable:** clients/[id].tsx
+**Tech:** Next.js dynamic routes · Supabase JOIN","fenzi-melissa","melissa,B.1,P1,Sprint-2","Sprint 2","Todo"
+"🟡 T2.4 — Formulaire création réparation complète","**SP:** 6 | **Durée:** 5h | **Exigence:** B.1
+⭐ Tâche surlignée cahier des charges
+
+**Sous-tâches:**
+- [ ] Select client depuis Supabase
+- [ ] Select appareil selon client (useEffect)
+- [ ] Select type_reparation
+- [ ] Select boutique
+- [ ] Select technicien selon boutique
+- [ ] Champ description_panne
+- [ ] Génération numero_suivi
+- [ ] INSERT réparation statut=Déposé
+
+**Livrable:** reparations/new.tsx
+**Tech:** React Hook Form · Supabase SELECT + INSERT","ndongo-joss","joss,B.1,P1,Sprint-2,exigence-directe","Sprint 2","Todo"
+"🟡 T2.5 — Liste réparations + 4 filtres fonctionnels","**SP:** 6 | **Durée:** 5h | **Exigence:** B.1/B.3
+⭐ Tâche surlignée cahier des charges
+
+**Sous-tâches:**
+- [ ] Tableau réparations (colonnes principales)
+- [ ] Filtre 1 : boutique → .eq('id_boutique')
+- [ ] Filtre 2 : statut → .eq('statut_actuel')
+- [ ] Filtre 3 : technicien → .eq('id_employe')
+- [ ] Filtre 4 : date → .gte() .lte()
+- [ ] Bouton réinitialiser filtres
+
+**Livrable:** reparations/index.tsx
+**Tech:** Supabase .eq() .gte() .lte()","ndongo-joss","joss,B.1,B.3,P1,Sprint-2,exigence-directe","Sprint 2","Todo"
+"T2.6 — Page détail réparation + changement statut","**SP:** 5 | **Durée:** 4h | **Exigence:** B.1/B.3
+
+**Sous-tâches:**
+- [ ] Page /reparations/[id] toutes les infos
+- [ ] Bouton statut avec transitions autorisées
+- [ ] Cycle de vie : Déposé→Diagnostiqué→En cours→Terminé→Livré
+- [ ] UPDATE statut_actuel
+- [ ] INSERT INTO historique_statut
+
+**Livrable:** reparations/[id].tsx
+**Tech:** Supabase UPDATE + INSERT · React state","fenzi-melissa","melissa,B.1,B.3,P1,Sprint-2","Sprint 2","Todo"
+"🟡 T2.7 — Timeline historique des statuts","**SP:** 4 | **Durée:** 3h | **Exigence:** B.1
+⭐ Tâche surlignée cahier des charges
+
+**Sous-tâches:**
+- [ ] Composant TimelineStatut
+- [ ] SELECT * FROM historique_statut WHERE id_reparation = :id
+- [ ] Affichage chronologique avec icône par statut
+- [ ] Date/heure + commentaire + auteur
+
+**Livrable:** components/TimelineStatut.tsx
+**Tech:** Supabase SELECT · React composant","fenzi-melissa","melissa,B.1,P1,Sprint-2,exigence-directe","Sprint 2","Todo"
+"T2.8 — 📸 Kanban captures #3 et #4 (Sprint 2)","**SP:** 1 | **Durée:** 1h | **Obligatoire pour A.2**
+
+**Sous-tâches:**
+- [ ] Capture #3 : Kanban Jour 1 Sprint 2 (tout en To Do)
+- [ ] Sprint Review Jour 5
+- [ ] Capture #4 : Kanban fin Sprint 2
+
+**Livrable:** kanban_S2_debut.png + kanban_S2_fin.png","ndongo-joss","joss,P2,Sprint-2,kanban","Sprint 2","Todo"
